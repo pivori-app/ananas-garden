@@ -43,74 +43,97 @@
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
+  /* Ananas Garden - Charte graphique fleuriste tendance */
+  --radius: 0.75rem;
+  
+  /* Fond blanc cassé #fafafa avec ton chaud */
+  --background: oklch(0.98 0.005 85);
+  /* Noir charbon #2c2c2c */
+  --foreground: oklch(0.25 0.01 60);
+  
+  /* Cartes blanc pur */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
+  --card-foreground: oklch(0.25 0.01 60);
+  
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
+  --popover-foreground: oklch(0.25 0.01 60);
+  
+  /* Vert sauge #87a96b comme couleur primaire */
+  --primary: oklch(0.68 0.08 130);
+  --primary-foreground: oklch(1 0 0);
+  
+  /* Rose pâle #ffcad4 comme couleur secondaire */
+  --secondary: oklch(0.88 0.12 10);
+  --secondary-foreground: oklch(0.25 0.01 60);
+  
+  --muted: oklch(0.96 0.005 85);
+  /* Gris doux #666 */
+  --muted-foreground: oklch(0.5 0.01 60);
+  
+  /* Doré discret #d4af37 comme accent */
+  --accent: oklch(0.75 0.12 85);
+  --accent-foreground: oklch(1 0 0);
+  
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  
+  /* Bordures très douces */
+  --border: oklch(0.92 0.005 85);
+  --input: oklch(0.92 0.005 85);
+  /* Vert sauge pour focus */
+  --ring: oklch(0.68 0.08 130);
+  
+  /* Charts avec palette Ananas Garden */
+  --chart-1: oklch(0.68 0.08 130); /* vert sauge */
+  --chart-2: oklch(0.88 0.12 10); /* rose pâle */
+  --chart-3: oklch(0.75 0.12 85); /* doré */
+  --chart-4: oklch(0.5 0.01 60); /* gris */
+  --chart-5: oklch(0.7 0.01 60);
+  
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.25 0.01 60);
+  --sidebar-primary: oklch(0.68 0.08 130);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0.005 85);
+  --sidebar-accent-foreground: oklch(0.25 0.01 60);
+  --sidebar-border: oklch(0.92 0.005 85);
+  --sidebar-ring: oklch(0.68 0.08 130);
 }
 
 .dark {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-500);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.85 0.005 65);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.85 0.005 65);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.85 0.005 65);
-  --secondary: oklch(0.24 0.006 286.033);
-  --secondary-foreground: oklch(0.7 0.005 65);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground:  oklch(0.92 0.005 65);
-  --destructive: oklch(0.704 0.191 22.216);
+  /* Pas de thème sombre pour Ananas Garden - mêmes couleurs que le light */
+  --background: oklch(0.98 0.005 85);
+  --foreground: oklch(0.25 0.01 60);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.25 0.01 60);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.25 0.01 60);
+  --primary: oklch(0.68 0.08 130);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.88 0.12 10);
+  --secondary-foreground: oklch(0.25 0.01 60);
+  --muted: oklch(0.96 0.005 85);
+  --muted-foreground: oklch(0.5 0.01 60);
+  --accent: oklch(0.75 0.12 85);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.488 0.243 264.376);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.85 0.005 65);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground:  oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.488 0.243 264.376);
+  --border: oklch(0.92 0.005 85);
+  --input: oklch(0.92 0.005 85);
+  --ring: oklch(0.68 0.08 130);
+  --chart-1: oklch(0.68 0.08 130);
+  --chart-2: oklch(0.88 0.12 10);
+  --chart-3: oklch(0.75 0.12 85);
+  --chart-4: oklch(0.5 0.01 60);
+  --chart-5: oklch(0.7 0.01 60);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.25 0.01 60);
+  --sidebar-primary: oklch(0.68 0.08 130);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0.005 85);
+  --sidebar-accent-foreground: oklch(0.25 0.01 60);
+  --sidebar-border: oklch(0.92 0.005 85);
+  --sidebar-ring: oklch(0.68 0.08 130);
 }
 
 @layer base {
@@ -119,6 +142,30 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Texture papier grainé subtile */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  /* Typographie élégante - Playfair Display pour les titres */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),

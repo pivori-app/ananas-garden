@@ -1,6 +1,19 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { 
+  InsertUser, 
+  users, 
+  flowers, 
+  bouquets, 
+  bouquetFlowers, 
+  cartItems, 
+  orders, 
+  orderItems,
+  InsertBouquet,
+  InsertCartItem,
+  InsertOrder,
+  InsertOrderItem
+} from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +102,199 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+/**
+ * Flowers queries
+ */
+export async function getAllFlowers() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(flowers);
+}
+
+export async function getFlowerById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(flowers).where(eq(flowers.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function searchFlowersByKeywords(keywords: string[]) {
+  const db = await getDb();
+  if (!db) return [];
+  const allFlowers = await db.select().from(flowers);
+  
+  // Score each flower based on keyword matches
+  const scoredFlowers = allFlowers.map(flower => {
+    const flowerKeywords = JSON.parse(flower.keywords) as string[];
+    const flowerEmotions = JSON.parse(flower.emotions) as string[];
+    
+    let score = 0;
+    keywords.forEach(keyword => {
+      const lowerKeyword = keyword.toLowerCase();
+      // Check in keywords
+      if (flowerKeywords.some(k => k.toLowerCase().includes(lowerKeyword) || lowerKeyword.includes(k.toLowerCase()))) {
+        score += 3;
+      }
+      // Check in emotions
+      if (flowerEmotions.some(e => e.toLowerCase().includes(lowerKeyword) || lowerKeyword.includes(e.toLowerCase()))) {
+        score += 2;
+      }
+      // Check in symbolism
+      if (flower.symbolism.toLowerCase().includes(lowerKeyword)) {
+        score += 1;
+      }
+    });
+    
+    return { flower, score };
+  });
+  
+  // Return flowers with score > 0, sorted by score
+  return scoredFlowers
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(item => item.flower);
+}
+
+export async function updateFlowerStock(flowerId: number, quantity: number) {
+  const db = await getDb();
+  if (!db) return false;
+  
+  const flower = await getFlowerById(flowerId);
+  if (!flower) return false;
+  
+  const newStock = flower.stock + quantity;
+  if (newStock < 0) return false;
+  
+  await db.update(flowers).set({ stock: newStock }).where(eq(flowers.id, flowerId));
+  return true;
+}
+
+/**
+ * Bouquets queries
+ */
+export async function createBouquet(bouquet: InsertBouquet) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.insert(bouquets).values(bouquet);
+  return Number(result[0].insertId);
+}
+
+export async function getBouquetById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(bouquets).where(eq(bouquets.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function addFlowerToBouquet(bouquetId: number, flowerId: number, quantity: number) {
+  const db = await getDb();
+  if (!db) return false;
+  
+  await db.insert(bouquetFlowers).values({
+    bouquetId,
+    flowerId,
+    quantity,
+  });
+  return true;
+}
+
+export async function getBouquetFlowers(bouquetId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const result = await db
+    .select({
+      flower: flowers,
+      quantity: bouquetFlowers.quantity,
+    })
+    .from(bouquetFlowers)
+    .innerJoin(flowers, eq(bouquetFlowers.flowerId, flowers.id))
+    .where(eq(bouquetFlowers.bouquetId, bouquetId));
+  
+  return result;
+}
+
+/**
+ * Cart queries
+ */
+export async function addToCart(item: InsertCartItem) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.insert(cartItems).values(item);
+  return Number(result[0].insertId);
+}
+
+export async function getCartItems(userId?: number, sessionId?: string) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  let query = db.select().from(cartItems);
+  
+  if (userId) {
+    query = query.where(eq(cartItems.userId, userId)) as any;
+  } else if (sessionId) {
+    query = query.where(eq(cartItems.sessionId, sessionId)) as any;
+  } else {
+    return [];
+  }
+  
+  return await query;
+}
+
+export async function removeFromCart(cartItemId: number) {
+  const db = await getDb();
+  if (!db) return false;
+  
+  await db.delete(cartItems).where(eq(cartItems.id, cartItemId));
+  return true;
+}
+
+export async function clearCart(userId?: number, sessionId?: string) {
+  const db = await getDb();
+  if (!db) return false;
+  
+  if (userId) {
+    await db.delete(cartItems).where(eq(cartItems.userId, userId));
+  } else if (sessionId) {
+    await db.delete(cartItems).where(eq(cartItems.sessionId, sessionId));
+  }
+  
+  return true;
+}
+
+/**
+ * Orders queries
+ */
+export async function createOrder(order: InsertOrder) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.insert(orders).values(order);
+  return Number(result[0].insertId);
+}
+
+export async function addOrderItem(item: InsertOrderItem) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.insert(orderItems).values(item);
+  return Number(result[0].insertId);
+}
+
+export async function getOrderById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(orders).where(eq(orders.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getUserOrders(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(orders).where(eq(orders.userId, userId));
+}
