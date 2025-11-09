@@ -48,4 +48,11 @@
 - [x] Tester le système de commande end-to-end
 - [x] Vérifier la responsivité mobile/desktop
 - [x] Optimiser les performances et le chargement
-- [ ] Créer un checkpoint de déploiement
+- [x] Créer un checkpoint de déploiement
+
+## Améliorations demandées - Header Navigation
+- [x] Créer le composant Header avec logo Ananas Garden
+- [x] Ajouter le menu de navigation (Accueil, Créer, Panier)
+- [x] Intégrer le Header dans toutes les pages
+- [x] Rendre le header responsive avec menu mobile
+- [ ] Créer un nouveau checkpoint après intégration
