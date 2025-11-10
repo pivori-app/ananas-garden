@@ -11,7 +11,7 @@ export default function OrderConfirmation() {
   const [, setLocation] = useLocation();
   const orderId = params?.id ? parseInt(params.id) : 0;
 
-  const { data: order, isLoading, error } = trpc.order.getById.useQuery(
+  const { data: order, isLoading, error } = trpc.orders.getById.useQuery(
     { id: orderId },
     { enabled: orderId > 0 }
   );

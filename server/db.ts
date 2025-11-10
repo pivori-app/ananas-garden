@@ -10,6 +10,8 @@ import {
   orders, 
   orderItems,
   favorites,
+  loyaltyPoints,
+  loyaltyTransactions,
   InsertBouquet,
   InsertCartItem,
   InsertOrder,
@@ -286,12 +288,35 @@ export async function addOrderItem(item: InsertOrderItem) {
   return Number(result[0].insertId);
 }
 
-export async function getOrderById(id: number) {
+export async function getOrderById(orderId: number) {
   const db = await getDb();
-  if (!db) return undefined;
-  
-  const result = await db.select().from(orders).where(eq(orders.id, id)).limit(1);
-  return result.length > 0 ? result[0] : undefined;
+  if (!db) return null;
+
+  const [order] = await db
+    .select()
+    .from(orders)
+    .where(eq(orders.id, orderId))
+    .limit(1);
+
+  if (!order) return null;
+
+  // Récupérer les items de la commande avec les bouquets
+  const items = await db
+    .select({
+      orderItem: orderItems,
+      bouquet: bouquets,
+    })
+    .from(orderItems)
+    .leftJoin(bouquets, eq(orderItems.bouquetId, bouquets.id))
+    .where(eq(orderItems.orderId, orderId));
+
+  return {
+    ...order,
+    items: items.map(item => ({
+      ...item.orderItem,
+      bouquet: item.bouquet!,
+    })),
+  };
 }
 
 export async function getUserOrders(userId: number) {
@@ -365,4 +390,144 @@ export async function isFavorite(userId: number, bouquetId: number): Promise<boo
     .limit(1);
 
   return result.length > 0;
+}
+
+export async function updateOrderStatus(orderId: number, status: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  await db
+    .update(orders)
+    .set({ status: status as "pending" | "confirmed" | "preparing" | "delivered" | "cancelled" })
+    .where(eq(orders.id, orderId));
+
+  return true;
+}
+
+// ==================== LOYALTY POINTS ====================
+
+export async function getUserLoyaltyPoints(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const [result] = await db
+    .select()
+    .from(loyaltyPoints)
+    .where(eq(loyaltyPoints.userId, userId))
+    .limit(1);
+
+  return result || null;
+}
+
+export async function createLoyaltyAccount(userId: number): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+
+  const result = await db.insert(loyaltyPoints).values({
+    userId,
+    points: 0,
+    totalEarned: 0,
+    totalSpent: 0,
+  });
+
+  return Number(result[0].insertId);
+}
+
+export async function addLoyaltyPoints(
+  userId: number,
+  points: number,
+  type: "earned" | "bonus",
+  description: string,
+  orderId?: number
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    // Créer ou récupérer le compte de fidélité
+    let account = await getUserLoyaltyPoints(userId);
+    if (!account) {
+      await createLoyaltyAccount(userId);
+      account = await getUserLoyaltyPoints(userId);
+    }
+
+    if (!account) return false;
+
+    // Mettre à jour les points
+    await db
+      .update(loyaltyPoints)
+      .set({
+        points: account.points + points,
+        totalEarned: account.totalEarned + points,
+      })
+      .where(eq(loyaltyPoints.userId, userId));
+
+    // Enregistrer la transaction
+    await db.insert(loyaltyTransactions).values({
+      userId,
+      points,
+      type,
+      description,
+      orderId,
+    });
+
+    return true;
+  } catch (error) {
+    console.error("[Loyalty] Error adding points:", error);
+    return false;
+  }
+}
+
+export async function spendLoyaltyPoints(
+  userId: number,
+  points: number,
+  description: string,
+  orderId?: number
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    const account = await getUserLoyaltyPoints(userId);
+    if (!account || account.points < points) {
+      return false; // Pas assez de points
+    }
+
+    // Mettre à jour les points
+    await db
+      .update(loyaltyPoints)
+      .set({
+        points: account.points - points,
+        totalSpent: account.totalSpent + points,
+      })
+      .where(eq(loyaltyPoints.userId, userId));
+
+    // Enregistrer la transaction
+    await db.insert(loyaltyTransactions).values({
+      userId,
+      points: -points, // Négatif pour dépense
+      type: "spent",
+      description,
+      orderId,
+    });
+
+    return true;
+  } catch (error) {
+    console.error("[Loyalty] Error spending points:", error);
+    return false;
+  }
+}
+
+export async function getLoyaltyTransactions(userId: number, limit: number = 20) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const transactions = await db
+    .select()
+    .from(loyaltyTransactions)
+    .where(eq(loyaltyTransactions.userId, userId))
+    .orderBy(loyaltyTransactions.createdAt)
+    .limit(limit);
+
+  return transactions;
 }

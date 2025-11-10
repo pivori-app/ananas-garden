@@ -191,8 +191,104 @@ export const appRouter = router({
         return await clearCart(ctx.user?.id, input.sessionId);
       }),
   }),
+  payment: router({
+    createCheckoutSession: protectedProcedure
+      .input(z.object({ orderId: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        const Stripe = (await import("stripe")).default;
+        const { ENV } = await import("./_core/env");
+        const { getOrderById } = await import("./db");
+        const { createBouquetProduct } = await import("./products");
 
-  order: router({
+        const stripe = new Stripe(ENV.stripeSecretKey, {
+          apiVersion: "2025-10-29.clover",
+        });
+
+        // Récupérer la commande
+        const order = await getOrderById(input.orderId);
+        if (!order) {
+          throw new Error("Commande introuvable");
+        }
+
+        // Créer les line items pour Stripe
+        const lineItems = order.items.map((item: any) => {
+          const product = createBouquetProduct({
+            ...item.bouquet,
+            explanation: item.bouquet.explanation || "Bouquet personnalisé",
+          });
+          return {
+            price_data: {
+              currency: product.currency,
+              product_data: {
+                name: product.name,
+                description: product.description,
+              },
+              unit_amount: product.amount,
+            },
+            quantity: item.quantity,
+          };
+        });
+
+        // Créer la session Stripe Checkout
+        const origin = ctx.req.headers.origin || "http://localhost:3000";
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          line_items: lineItems,
+          mode: "payment",
+          success_url: `${origin}/order-confirmation/${input.orderId}?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${origin}/checkout`,
+          customer_email: ctx.user.email || undefined,
+          client_reference_id: ctx.user.id.toString(),
+          metadata: {
+            user_id: ctx.user.id.toString(),
+            customer_email: ctx.user.email || "",
+            customer_name: ctx.user.name || "",
+            order_data: JSON.stringify({ orderId: input.orderId }),
+          },
+          allow_promotion_codes: true,
+        });
+
+        return { url: session.url };
+      }),
+  }),
+
+  loyalty: router({
+    getPoints: protectedProcedure.query(async ({ ctx }) => {
+      const { getUserLoyaltyPoints } = await import("./db");
+      return await getUserLoyaltyPoints(ctx.user.id);
+    }),
+
+    getTransactions: protectedProcedure
+      .input(z.object({ limit: z.number().optional().default(20) }))
+      .query(async ({ input, ctx }) => {
+        const { getLoyaltyTransactions } = await import("./db");
+        return await getLoyaltyTransactions(ctx.user.id, input.limit);
+      }),
+
+    spendPoints: protectedProcedure
+      .input(
+        z.object({
+          points: z.number().min(1),
+          description: z.string(),
+          orderId: z.number().optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const { spendLoyaltyPoints } = await import("./db");
+        const success = await spendLoyaltyPoints(
+          ctx.user.id,
+          input.points,
+          input.description,
+          input.orderId
+        );
+        if (!success) {
+          throw new Error("Points insuffisants ou erreur lors de la dépense");
+        }
+        return { success: true };
+      }),
+  }),
+
+  orders: router({
     create: publicProcedure
       .input(z.object({
         customerName: z.string(),

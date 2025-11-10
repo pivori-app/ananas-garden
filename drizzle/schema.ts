@@ -143,3 +143,35 @@ export const cartItems = mysqlTable("cartItems", {
 
 export type CartItem = typeof cartItems.$inferSelect;
 export type InsertCartItem = typeof cartItems.$inferInsert;
+
+/**
+ * Table des points de fidélité
+ */
+export const loyaltyPoints = mysqlTable("loyaltyPoints", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").references(() => users.id).notNull().unique(),
+  points: int("points").default(0).notNull(),
+  totalEarned: int("totalEarned").default(0).notNull(),
+  totalSpent: int("totalSpent").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type LoyaltyPoints = typeof loyaltyPoints.$inferSelect;
+export type InsertLoyaltyPoints = typeof loyaltyPoints.$inferInsert;
+
+/**
+ * Table des transactions de points de fidélité
+ */
+export const loyaltyTransactions = mysqlTable("loyaltyTransactions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").references(() => users.id).notNull(),
+  points: int("points").notNull(), // positif pour gain, négatif pour dépense
+  type: mysqlEnum("type", ["earned", "spent", "bonus"]).notNull(),
+  description: text("description").notNull(),
+  orderId: int("orderId").references(() => orders.id),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type LoyaltyTransaction = typeof loyaltyTransactions.$inferSelect;
+export type InsertLoyaltyTransaction = typeof loyaltyTransactions.$inferInsert;

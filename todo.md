@@ -86,4 +86,22 @@
 - [x] Développer l'algorithme de décodage du message émotionnel
 - [x] Afficher le résultat "Votre bouquet veut dire : [message]"
 - [x] Tester toutes les nouvelles fonctionnalités
-- [ ] Créer un checkpoint final v2.0
+- [x] Créer un checkpoint final v2.0
+
+## Phase 4 - Finalisation e-commerce et pages légales
+- [x] Intégrer Stripe avec webdev_add_feature
+- [x] Créer le flux de paiement dans la page checkout avec Stripe
+- [ ] Tester les paiements en mode test
+- [x] Créer le système de notifications email (confirmation de commande)
+- [x] Implémenter l'envoi automatique d'email après commande
+- [x] Ajouter la table `loyalty_points` pour le programme de fidélité
+- [x] Créer les procédures tRPC pour gérer les points de fidélité
+- [x] Implémenter l'attribution automatique de points après achat
+- [x] Créer la page "Mes points" pour visualiser et utiliser les points
+- [ ]- [x] Créer le composant Footer avec liens vers pages légales
+- [x] Créer la page CGV (Conditions Générales de Vente)
+- [x] Créer la page Mentions légales
+- [x] Créer la page Politique de confidentialité
+- [x] Créer la page Contact avec formulaire
+- [x] Tester toutes les fonctionnalités finales
+- [ ] Créer un checkpoint final v3.0

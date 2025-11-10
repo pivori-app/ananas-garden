@@ -35,13 +35,27 @@ export default function Checkout() {
     { enabled: !!sessionId }
   );
 
-  const createOrder = trpc.order.create.useMutation({
-    onSuccess: (data) => {
-      toast.success("Commande créée avec succès !");
-      setLocation(`/order-confirmation/${data.orderId}`);
+  const createOrder = trpc.orders.create.useMutation({
+    onSuccess: async (data: any) => {
+      toast.success("Commande créée ! Redirection vers le paiement...");
+      
+      // Créer la session Stripe
+      createCheckoutSession.mutate({ orderId: data.orderId });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(error.message || "Erreur lors de la création de la commande");
+    }
+  });
+
+  const createCheckoutSession = trpc.payment.createCheckoutSession.useMutation({
+    onSuccess: (data: any) => {
+      if (data.url) {
+        toast.info("💳 Redirection vers le paiement sécurisé...");
+        window.open(data.url, "_blank");
+      }
+    },
+    onError: (error: any) => {
+      toast.error("Erreur lors de la création de la session de paiement");
     }
   });
 
