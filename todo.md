@@ -137,6 +137,12 @@
   - [x] Ajouter les notifications de promotions personnalisées
   - [x] Ajouter les rappels d'anniversaire pour bouquets récurrents
   - [ ] Créer le centre de notifications dans le Dashboard
+- [x] Page Mon Compte (gestion du profil utilisateur)
+  - [x] Créer la page Mon Compte
+  - [x] Ajouter la modification du nom et email
+  - [x] Ajouter la gestion des préférences de notification
+  - [x] Ajouter l'option de suppression de compte
+  - [x] Intégrer dans le menu utilisateur
 - [ ] Module de personnalisation avancée (configurateur visuel)
   - [ ] Créer la page Configurateur de bouquet
   - [ ] Implémenter la sélection fleur par fleur
