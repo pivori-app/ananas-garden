@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { APP_LOGO } from "@/const";
 import { trpc } from "@/lib/trpc";
+import NotificationBell from "./NotificationBell";
 
 export default function Header() {
   const [location] = useLocation();
@@ -97,6 +98,9 @@ export default function Header() {
             </Link>
           ))}
         </nav>
+
+          {/* Notifications */}
+          <NotificationBell />
 
           {/* User Menu */}
           {isAuthenticated ? (

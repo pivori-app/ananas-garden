@@ -234,3 +234,20 @@ export const notifications = mysqlTable("notifications", {
 
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
+
+/**
+ * Table du programme de parrainage
+ */
+export const referrals = mysqlTable("referrals", {
+  id: int("id").autoincrement().primaryKey(),
+  referrerId: int("referrerId").references(() => users.id).notNull(),
+  referredUserId: int("referredUserId").references(() => users.id),
+  referralCode: varchar("referralCode", { length: 20 }).notNull().unique(),
+  status: mysqlEnum("status", ["pending", "completed", "rewarded"]).default("pending").notNull(),
+  pointsAwarded: int("pointsAwarded").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  completedAt: timestamp("completedAt"),
+});
+
+export type Referral = typeof referrals.$inferSelect;
+export type InsertReferral = typeof referrals.$inferInsert;

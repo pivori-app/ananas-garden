@@ -20,6 +20,8 @@ import Subscriptions from "./pages/Subscriptions";
 import Testimonials from "./pages/Testimonials";
 import Dashboard from "./pages/Dashboard";
 import Account from "./pages/Account";
+import Notifications from "./pages/Notifications";
+import BouquetConfigurator from "./pages/BouquetConfigurator";
 import CGV from "./pages/CGV";
 import MentionsLegales from "./pages/MentionsLegales";
 import PolitiqueConfidentialite from "./pages/PolitiqueConfidentialite";
@@ -42,6 +44,8 @@ function Router() {
         <Route path="/testimonials" component={Testimonials} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/account" component={Account} />
+        <Route path="/notifications" component={Notifications} />
+        <Route path="/configurator" component={BouquetConfigurator} />
         <Route path="/bouquet/:id" component={BouquetDetail} />
         <Route path="/cart" component={Cart} />
         <Route path="/checkout" component={Checkout} />

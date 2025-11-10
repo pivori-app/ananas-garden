@@ -50,6 +50,13 @@
       "when": 1762794907171,
       "tag": "0006_steep_sister_grimm",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1762797551690,
+      "tag": "0007_brief_kang",
+      "breakpoints": true
     }
   ]
 }
