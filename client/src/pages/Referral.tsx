@@ -4,14 +4,16 @@ import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Check, Share2, Gift, Users, TrendingUp, Loader2, Facebook, Twitter, Mail } from "lucide-react";
+import { Copy, Check, Share2, Gift, Users, TrendingUp, Loader2, Facebook, Twitter, Mail, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useLocation } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function Referral() {
   const { user, isAuthenticated, loading } = useAuth();
+  const [, setLocation] = useLocation();
   const [copied, setCopied] = useState(false);
 
   const { data: referralCode, isLoading: codeLoading } = trpc.referral.getMyCode.useQuery(undefined, {
@@ -102,6 +104,15 @@ export default function Referral() {
       
       <main className="flex-1 pt-24 pb-16">
         <div className="container max-w-6xl">
+          <Button
+            variant="ghost"
+            onClick={() => setLocation("/dashboard")}
+            className="mb-6"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Retour au dashboard
+          </Button>
+
           {/* Hero Section */}
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#8B9D83]/10 mb-4">

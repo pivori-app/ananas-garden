@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { useState } from "react";
-import { User, Mail, Bell, Trash2, Save } from "lucide-react";
+import { User, Mail, Bell, Trash2, Save, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function Account() {
@@ -48,6 +48,14 @@ export default function Account() {
   return (
     <div className="min-h-screen bg-cream py-12">
       <div className="container max-w-4xl">
+        <Button
+          variant="ghost"
+          onClick={() => setLocation("/dashboard")}
+          className="mb-6"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Retour au dashboard
+        </Button>
         <div className="mb-8">
           <h1 className="font-display text-4xl text-charcoal mb-2">Mon Compte</h1>
           <p className="text-charcoal/70">Gérez vos informations personnelles et vos préférences</p>

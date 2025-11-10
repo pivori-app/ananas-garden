@@ -2,13 +2,14 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { Heart, Loader2, ShoppingCart } from "lucide-react";
-import { Link } from "wouter";
+import { Heart, Loader2, ShoppingCart, ArrowLeft } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { toast } from "sonner";
 import { getLoginUrl } from "@/const";
 
 export default function Favorites() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const [, setLocation] = useLocation();
   const { data: favoritesData, isLoading, refetch } = trpc.favorites.list.useQuery(undefined, {
     enabled: isAuthenticated,
   });
@@ -73,6 +74,14 @@ export default function Favorites() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 py-12">
       <div className="container max-w-6xl">
+        <Button
+          variant="ghost"
+          onClick={() => setLocation("/dashboard")}
+          className="mb-6"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Retour au dashboard
+        </Button>
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2 font-serif">Mes Favoris</h1>
           <p className="text-muted-foreground">

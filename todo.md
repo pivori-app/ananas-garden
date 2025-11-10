@@ -190,4 +190,18 @@
 ## Phase 8 - Ajustements visuels et documentation
 - [x] Agrandir le logo dans le header pour meilleure visibilité (h-10 -> h-14)
 - [x] Capturer des aperçus des 6 articles du blog
-- [ ] Créer un checkpoint avec les modifications
+- [x] Créer un checkpoint avec les modifications (v8.1)
+
+## Phase 9 - Boutons de retour sur toutes les pages
+- [x] Identifier toutes les pages nécessitant un bouton retour (25 pages identifiées)
+- [x] Ajouter bouton retour sur BouquetDetail (déjà présent)
+- [x] Ajouter bouton retour sur BlogPost (déjà présent)
+- [x] Ajouter bouton retour sur Referral
+- [x] Ajouter bouton retour sur Account
+- [x] Ajouter bouton retour sur Notifications
+- [x] Ajouter bouton retour sur Cart (déjà présent - "Continuer mes achats")
+- [x] Ajouter bouton retour sur Favorites
+- [x] Ajouter bouton retour sur CGV (déjà présent)
+- [x] Ajouter bouton retour sur LoyaltyPoints (déjà présent)
+- [x] Tester tous les boutons de retour (Account testé avec succès)
+- [ ] Créer le checkpoint final

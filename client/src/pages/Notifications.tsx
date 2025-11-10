@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { Bell, Check, CheckCheck } from "lucide-react";
+import { Bell, Check, CheckCheck, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function Notifications() {
@@ -60,6 +60,14 @@ export default function Notifications() {
   return (
     <div className="min-h-screen bg-cream py-12">
       <div className="container max-w-4xl">
+        <Button
+          variant="ghost"
+          onClick={() => setLocation("/dashboard")}
+          className="mb-6"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Retour au dashboard
+        </Button>
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="font-display text-4xl text-charcoal mb-2">Notifications</h1>
