@@ -104,4 +104,16 @@
 - [x] Créer la page Politique de confidentialité
 - [x] Créer la page Contact avec formulaire
 - [x] Tester toutes les fonctionnalités finales
-- [ ] Créer un checkpoint final v3.0
+- [x] Créer un checkpoint final v3.0
+
+## Phase 5 - Corrections et nouvelles fonctionnalités
+- [x] Corriger l'affichage des émotions (retirer guillemets et crochets) dans le catalogue
+- [x] Créer le système de recommandations personnalisées basé sur l'historique
+- [ ] Implémenter les abonnements bouquets mensuels avec Stripe Subscriptions
+- [ ] Développer la galerie de témoignages clients avec photos et avis
+- [ ] Créer le back-office client (tableau de bord personnel)
+- [ ] Ajouter la gestion des commandes dans le back-office
+- [ ] Ajouter la gestion des favoris dans le back-office
+- [ ] Ajouter la gestion des points de fidélité dans le back-office
+- [ ] Ajouter la gestion des abonnements dans le back-office
+- [ ] Créer un checkpoint final v4.0

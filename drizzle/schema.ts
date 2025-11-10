@@ -175,3 +175,27 @@ export const loyaltyTransactions = mysqlTable("loyaltyTransactions", {
 
 export type LoyaltyTransaction = typeof loyaltyTransactions.$inferSelect;
 export type InsertLoyaltyTransaction = typeof loyaltyTransactions.$inferInsert;
+
+/**
+ * Table des abonnements bouquets mensuels
+ */
+export const subscriptions = mysqlTable("subscriptions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").references(() => users.id).notNull(),
+  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }).unique(),
+  stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
+  plan: mysqlEnum("plan", ["economique", "standard", "premium"]).notNull(),
+  status: mysqlEnum("status", ["active", "cancelled", "paused", "expired"]).default("active").notNull(),
+  price: int("price").notNull(), // Prix mensuel en centimes
+  deliveryDay: int("deliveryDay").default(1).notNull(), // Jour du mois (1-28)
+  deliveryAddress: text("deliveryAddress").notNull(),
+  preferences: text("preferences"), // JSON: occasions préférées, couleurs, style
+  currentPeriodStart: timestamp("currentPeriodStart"),
+  currentPeriodEnd: timestamp("currentPeriodEnd"),
+  cancelledAt: timestamp("cancelledAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Subscription = typeof subscriptions.$inferSelect;
+export type InsertSubscription = typeof subscriptions.$inferInsert;
