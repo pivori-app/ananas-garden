@@ -16,6 +16,9 @@ import Catalog from "./pages/Catalog";
 import Scanner from "./pages/Scanner";
 import Favorites from "./pages/Favorites";
 import LoyaltyPoints from "./pages/LoyaltyPoints";
+import Subscriptions from "./pages/Subscriptions";
+import Testimonials from "./pages/Testimonials";
+import Dashboard from "./pages/Dashboard";
 import CGV from "./pages/CGV";
 import MentionsLegales from "./pages/MentionsLegales";
 import PolitiqueConfidentialite from "./pages/PolitiqueConfidentialite";
@@ -34,6 +37,9 @@ function Router() {
         <Route path="/scanner" component={Scanner} />
         <Route path="/favorites" component={Favorites} />
         <Route path="/loyalty-points" component={LoyaltyPoints} />
+        <Route path="/subscriptions" component={Subscriptions} />
+        <Route path="/testimonials" component={Testimonials} />
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="/bouquet/:id" component={BouquetDetail} />
         <Route path="/cart" component={Cart} />
         <Route path="/checkout" component={Checkout} />

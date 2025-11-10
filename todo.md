@@ -110,10 +110,20 @@
 - [x] Corriger l'affichage des émotions (retirer guillemets et crochets) dans le catalogue
 - [x] Créer le système de recommandations personnalisées basé sur l'historique
 - [ ] Implémenter les abonnements bouquets mensuels avec Stripe Subscriptions
+  - [x] Créer la table subscriptions
+  - [x] Créer le module subscriptionManager.ts
+  - [x] Ajouter les procédures tRPC pour les abonnements
+  - [x] Créer la page frontend de gestion des abonnements
 - [ ] Développer la galerie de témoignages clients avec photos et avis
-- [ ] Créer le back-office client (tableau de bord personnel)
-- [ ] Ajouter la gestion des commandes dans le back-office
-- [ ] Ajouter la gestion des favoris dans le back-office
-- [ ] Ajouter la gestion des points de fidélité dans le back-office
-- [ ] Ajouter la gestion des abonnements dans le back-office
+  - [x] Créer la table testimonials
+  - [x] Créer les procédures tRPC pour les témoignages
+  - [x] Créer la page galerie de témoignages
+- [x] Créer le back-office client (tableau de bord personnel)
+  - [x] Créer la page Dashboard client
+  - [x] Ajouter la vue d'ensemble (stats, commandes récentes)
+  - [x] Ajouter la gestion des commandes
+  - [x] Ajouter la gestion des favoris
+  - [x] Ajouter la gestion des points de fidélité
+  - [x] Ajouter la gestion des abonnements
+- [x] Tester toutes les fonctionnalités
 - [ ] Créer un checkpoint final v4.0

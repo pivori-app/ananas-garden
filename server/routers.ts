@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { getRecommendationsForUser, getPopularBouquets, getRecommendationsByOccasion, getRecommendationsByBudget } from "./recommendations";
+import { createSubscription, cancelSubscription, pauseSubscription, resumeSubscription, getUserSubscriptions } from "./subscriptionManager";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -286,6 +287,83 @@ export const appRouter = router({
           throw new Error("Points insuffisants ou erreur lors de la dépense");
         }
         return { success: true };
+      }),
+  }),
+
+  testimonials: router({
+    list: publicProcedure
+      .input(z.object({ limit: z.number().optional().default(20) }))
+      .query(async ({ input }) => {
+        const { getVisibleTestimonials } = await import("./db");
+        return await getVisibleTestimonials(input.limit);
+      }),
+
+    create: protectedProcedure
+      .input(
+        z.object({
+          rating: z.number().min(1).max(5),
+          comment: z.string(),
+          bouquetName: z.string().optional(),
+          imageUrl: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const { createTestimonial } = await import("./db");
+        const testimonialId = await createTestimonial({
+          userId: ctx.user.id,
+          customerName: ctx.user.name || "Client anonyme",
+          ...input,
+        });
+        return { testimonialId };
+      }),
+
+    myTestimonials: protectedProcedure.query(async ({ ctx }) => {
+      const { getUserTestimonials } = await import("./db");
+      return await getUserTestimonials(ctx.user.id);
+    }),
+  }),
+
+  subscriptions: router({
+    create: protectedProcedure
+      .input(
+        z.object({
+          plan: z.enum(["economique", "standard", "premium"]),
+          deliveryDay: z.number().min(1).max(28),
+          deliveryAddress: z.string(),
+          preferences: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        if (!ctx.user.email) {
+          throw new Error("Email requis pour créer un abonnement");
+        }
+        return await createSubscription({
+          userId: ctx.user.id,
+          userEmail: ctx.user.email,
+          ...input,
+        });
+      }),
+
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return await getUserSubscriptions(ctx.user.id);
+    }),
+
+    cancel: protectedProcedure
+      .input(z.object({ subscriptionId: z.number() }))
+      .mutation(async ({ input }) => {
+        return await cancelSubscription(input.subscriptionId);
+      }),
+
+    pause: protectedProcedure
+      .input(z.object({ subscriptionId: z.number() }))
+      .mutation(async ({ input }) => {
+        return await pauseSubscription(input.subscriptionId);
+      }),
+
+    resume: protectedProcedure
+      .input(z.object({ subscriptionId: z.number() }))
+      .mutation(async ({ input }) => {
+        return await resumeSubscription(input.subscriptionId);
       }),
   }),
 

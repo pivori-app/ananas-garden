@@ -12,11 +12,13 @@ import {
   favorites,
   loyaltyPoints,
   loyaltyTransactions,
+  testimonials,
   InsertBouquet,
   InsertCartItem,
   InsertOrder,
   InsertOrderItem,
-  InsertFavorite
+  InsertFavorite,
+  InsertTestimonial
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -530,4 +532,37 @@ export async function getLoyaltyTransactions(userId: number, limit: number = 20)
     .limit(limit);
 
   return transactions;
+}
+
+// ==================== TESTIMONIALS ====================
+
+export async function createTestimonial(testimonial: InsertTestimonial): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.insert(testimonials).values(testimonial);
+  return Number(result[0].insertId);
+}
+
+export async function getVisibleTestimonials(limit: number = 20) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(testimonials)
+    .where(eq(testimonials.isVisible, 1))
+    .orderBy(desc(testimonials.createdAt))
+    .limit(limit);
+}
+
+export async function getUserTestimonials(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(testimonials)
+    .where(eq(testimonials.userId, userId))
+    .orderBy(desc(testimonials.createdAt));
 }

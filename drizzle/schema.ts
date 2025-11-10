@@ -199,3 +199,22 @@ export const subscriptions = mysqlTable("subscriptions", {
 
 export type Subscription = typeof subscriptions.$inferSelect;
 export type InsertSubscription = typeof subscriptions.$inferInsert;
+
+/**
+ * Table des témoignages clients
+ */
+export const testimonials = mysqlTable("testimonials", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").references(() => users.id),
+  customerName: varchar("customerName", { length: 200 }).notNull(),
+  rating: int("rating").notNull(), // 1-5 étoiles
+  comment: text("comment").notNull(),
+  bouquetName: varchar("bouquetName", { length: 200 }),
+  imageUrl: text("imageUrl"), // Photo du bouquet livré
+  isVerified: int("isVerified").default(0).notNull(), // 0 = non vérifié, 1 = vérifié
+  isVisible: int("isVisible").default(1).notNull(), // 0 = caché, 1 = visible
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Testimonial = typeof testimonials.$inferSelect;
+export type InsertTestimonial = typeof testimonials.$inferInsert;
