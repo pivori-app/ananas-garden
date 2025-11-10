@@ -38,7 +38,8 @@ export default function Header() {
   const navItems = [
     { href: "/", label: "Accueil" },
     { href: "/create", label: "Créer un bouquet" },
-    { href: "/cart", label: "Panier", badge: cartItemCount }
+    { href: "/scanner", label: "Scanner" },
+    { href: "/cart", label: "Panier", badge: cartItemCount },
   ];
 
   const isActive = (href: string) => {

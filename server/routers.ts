@@ -31,12 +31,52 @@ export const appRouter = router({
       }),
   }),
 
+  favorites: router({
+    add: protectedProcedure
+      .input(z.object({ bouquetId: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        const { addFavorite } = await import("./db");
+        const favoriteId = await addFavorite(ctx.user.id, input.bouquetId);
+        return { success: !!favoriteId, favoriteId };
+      }),
+
+    remove: protectedProcedure
+      .input(z.object({ bouquetId: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        const { removeFavorite } = await import("./db");
+        const success = await removeFavorite(ctx.user.id, input.bouquetId);
+        return { success };
+      }),
+
+    list: protectedProcedure
+      .query(async ({ ctx }) => {
+        const { getUserFavorites } = await import("./db");
+        return await getUserFavorites(ctx.user.id);
+      }),
+
+    check: protectedProcedure
+      .input(z.object({ bouquetId: z.number() }))
+      .query(async ({ input, ctx }) => {
+        const { isFavorite } = await import("./db");
+        const favorite = await isFavorite(ctx.user.id, input.bouquetId);
+        return { isFavorite: favorite };
+      }),
+  }),
+
   bouquet: router({
     analyze: publicProcedure
       .input(z.object({ message: z.string() }))
       .mutation(async ({ input }) => {
         const { analyzeMessage } = await import("./emotionalAnalysis");
         return await analyzeMessage(input.message);
+      }),
+    
+    analyzeBouquetImage: publicProcedure
+      .input(z.object({ imageData: z.string() }))
+      .mutation(async ({ input }) => {
+        const { analyzeFlowerImage } = await import("./flowerImageAnalysis");
+        const analysis = await analyzeFlowerImage(input.imageData);
+        return analysis;
       }),
     
     generate: publicProcedure
@@ -228,8 +268,8 @@ export const appRouter = router({
         const { getOrderById } = await import("./db");
         return await getOrderById(input.id);
       }),
-    
-    myOrders: protectedProcedure
+
+    list: protectedProcedure
       .query(async ({ ctx }) => {
         const { getUserOrders } = await import("./db");
         return await getUserOrders(ctx.user.id);

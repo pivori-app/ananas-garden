@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, 
@@ -9,10 +9,12 @@ import {
   cartItems, 
   orders, 
   orderItems,
+  favorites,
   InsertBouquet,
   InsertCartItem,
   InsertOrder,
-  InsertOrderItem
+  InsertOrderItem,
+  InsertFavorite
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -297,4 +299,70 @@ export async function getUserOrders(userId: number) {
   if (!db) return [];
   
   return await db.select().from(orders).where(eq(orders.userId, userId));
+}
+
+// ==================== FAVORITES ====================
+
+export async function addFavorite(userId: number, bouquetId: number): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+
+  // Vérifier si déjà en favoris
+  const existing = await db
+    .select()
+    .from(favorites)
+    .where(and(eq(favorites.userId, userId), eq(favorites.bouquetId, bouquetId)))
+    .limit(1);
+
+  if (existing.length > 0) {
+    return existing[0].id;
+  }
+
+  const result = await db.insert(favorites).values({
+    userId,
+    bouquetId,
+  });
+
+  return result[0].insertId;
+}
+
+export async function removeFavorite(userId: number, bouquetId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  await db
+    .delete(favorites)
+    .where(and(eq(favorites.userId, userId), eq(favorites.bouquetId, bouquetId)));
+
+  return true;
+}
+
+export async function getUserFavorites(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({
+      favorite: favorites,
+      bouquet: bouquets,
+    })
+    .from(favorites)
+    .leftJoin(bouquets, eq(favorites.bouquetId, bouquets.id))
+    .where(eq(favorites.userId, userId))
+    .orderBy(desc(favorites.createdAt));
+
+  return result;
+}
+
+export async function isFavorite(userId: number, bouquetId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  const result = await db
+    .select()
+    .from(favorites)
+    .where(and(eq(favorites.userId, userId), eq(favorites.bouquetId, bouquetId)))
+    .limit(1);
+
+  return result.length > 0;
 }

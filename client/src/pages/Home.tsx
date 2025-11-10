@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Sparkles, Heart, MessageCircle, Flower2 } from "lucide-react";
+import { Sparkles, Heart, MessageCircle, Flower2, Camera } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Home() {
@@ -40,6 +40,13 @@ export default function Home() {
                 <Button variant="outline" size="lg" className="gap-2">
                   <Flower2 className="h-5 w-5" />
                   Explorer les fleurs
+                </Button>
+              </Link>
+              
+              <Link href="/scanner">
+                <Button variant="outline" size="lg" className="gap-2">
+                  <Camera className="h-5 w-5" />
+                  Scanner un bouquet
                 </Button>
               </Link>
             </div>

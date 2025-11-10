@@ -68,4 +68,22 @@
 ## Corrections d'erreurs
 - [x] Corriger l'erreur DialogTitle manquant pour l'accessibilité
 - [x] Corriger les balises <a> imbriquées dans Header
-- [ ] Créer un checkpoint après corrections
+- [x] Créer un checkpoint après corrections
+
+## Nouvelles fonctionnalités majeures - Phase 3
+- [x] Générer des images de fleurs individuelles (33 fleurs)
+- [x] Créer le système de composition visuelle de bouquets
+- [x] Implémenter l'algorithme de positionnement des fleurs dans le bouquet
+- [x] Ajouter la table `favorites` pour sauvegarder les bouquets favoris
+- [x] Créer les procédures tRPC pour gérer les favoris
+- [x] Implémenter la page "Mes favoris" pour les utilisateurs connectés
+- [x] Ajouter la fonctionnalité d'historique des bouquets créés
+- [ ] Intégrer Stripe avec webdev_add_feature
+- [ ] Créer le flux de paiement dans la page checkout
+- [x] Créer la page "Scanner un bouquet" avec accès caméra
+- [x] Implémenter la capture photo et l'upload vers le serveur
+- [x] Créer le système d'analyse IA pour identifier les fleurs dans l'image
+- [x] Développer l'algorithme de décodage du message émotionnel
+- [x] Afficher le résultat "Votre bouquet veut dire : [message]"
+- [x] Tester toutes les nouvelles fonctionnalités
+- [ ] Créer un checkpoint final v2.0

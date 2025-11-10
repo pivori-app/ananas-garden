@@ -5,13 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, ShoppingCart, ArrowLeft, Sparkles } from "lucide-react";
+import { Loader2, ShoppingCart, ArrowLeft, Sparkles, Heart } from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
+import BouquetVisualizer from "@/components/BouquetVisualizer";
 import { toast } from "sonner";
 
 export default function BouquetDetail() {
   const [, params] = useRoute("/bouquet/:id");
   const [, setLocation] = useLocation();
   const bouquetId = params?.id ? parseInt(params.id) : 0;
+  const { isAuthenticated } = useAuth();
   
   const [sessionId] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -29,6 +32,38 @@ export default function BouquetDetail() {
     { id: bouquetId },
     { enabled: bouquetId > 0 }
   );
+
+  const { data: favoriteCheck } = trpc.favorites.check.useQuery(
+    { bouquetId },
+    { enabled: isAuthenticated && bouquetId > 0 }
+  );
+  const isFavorite = favoriteCheck?.isFavorite || false;
+
+  const addFavoriteMutation = trpc.favorites.add.useMutation({
+    onSuccess: () => {
+      toast.success("Ajouté aux favoris !");
+      window.location.reload();
+    },
+  });
+
+  const removeFavoriteMutation = trpc.favorites.remove.useMutation({
+    onSuccess: () => {
+      toast.success("Retiré des favoris");
+      window.location.reload();
+    },
+  });
+
+  const toggleFavorite = () => {
+    if (!isAuthenticated) {
+      toast.error("Connectez-vous pour sauvegarder vos favoris");
+      return;
+    }
+    if (isFavorite) {
+      removeFavoriteMutation.mutate({ bouquetId });
+    } else {
+      addFavoriteMutation.mutate({ bouquetId });
+    }
+  };
 
   const addToCart = trpc.cart.add.useMutation({
     onSuccess: () => {
@@ -87,14 +122,16 @@ export default function BouquetDetail() {
               </Badge>
             </div>
 
-            {/* Placeholder for bouquet visualization */}
-            <div className="mb-6 flex aspect-square items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
-              <div className="text-center">
-                <Sparkles className="mx-auto mb-4 h-16 w-16 text-primary" />
-                <p className="text-sm text-muted-foreground">
-                  Visualisation du bouquet
-                </p>
-              </div>
+            {/* Bouquet visualization */}
+            <div className="mb-6 flex items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 p-8">
+              <BouquetVisualizer
+                flowers={flowers.map(f => ({
+                  name: f.flower.name,
+                  color: f.flower.color,
+                  quantity: f.quantity
+                }))}
+                size="large"
+              />
             </div>
 
             {/* Flowers list */}
@@ -197,12 +234,22 @@ export default function BouquetDetail() {
                   {totalPrice.toFixed(2)} €
                 </span>
               </div>
-              <Button
-                size="lg"
-                className="w-full h-14 text-lg"
-                onClick={() => addToCart.mutate({ bouquetId, sessionId })}
-                disabled={addToCart.isPending}
-              >
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="h-14"
+                  onClick={toggleFavorite}
+                  disabled={addFavoriteMutation.isPending || removeFavoriteMutation.isPending}
+                >
+                  <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current text-red-500' : ''}`} />
+                </Button>
+                <Button
+                  size="lg"
+                  className="flex-1 h-14 text-lg"
+                  onClick={() => addToCart.mutate({ bouquetId, sessionId })}
+                  disabled={addToCart.isPending}
+                >
                 {addToCart.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -215,6 +262,7 @@ export default function BouquetDetail() {
                   </>
                 )}
               </Button>
+              </div>
             </Card>
           </div>
         </div>

@@ -12,6 +12,8 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import Catalog from "./pages/Catalog";
+import Scanner from "./pages/Scanner";
+import Favorites from "./pages/Favorites";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -22,6 +24,8 @@ function Router() {
         <Route path={"/"} component={Home} />
         <Route path="/create" component={CreateBouquet} />
         <Route path="/catalog" component={Catalog} />
+        <Route path="/scanner" component={Scanner} />
+        <Route path="/favorites" component={Favorites} />
         <Route path="/bouquet/:id" component={BouquetDetail} />
         <Route path="/cart" component={Cart} />
         <Route path="/checkout" component={Checkout} />
