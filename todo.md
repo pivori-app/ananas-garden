@@ -185,4 +185,9 @@
   - [x] Blog : 6 articles affichés correctement avec images et catégories
   - [x] Parrainage : Routes créées, page accessible, liens dans menu et dashboard
   - [x] Avis clients : Section ajoutée sur pages de détail, formulaire dans dashboard
-- [ ] Créer le checkpoint final v8.0
+- [x] Créer le checkpoint final v8.0
+
+## Phase 8 - Ajustements visuels et documentation
+- [x] Agrandir le logo dans le header pour meilleure visibilité (h-10 -> h-14)
+- [x] Capturer des aperçus des 6 articles du blog
+- [ ] Créer un checkpoint avec les modifications

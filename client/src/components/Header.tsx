@@ -66,7 +66,7 @@ export default function Header() {
         {/* Logo */}
         <Link href="/">
           <div className="flex items-center gap-3 transition-opacity hover:opacity-80 cursor-pointer">
-            <img src={APP_LOGO} alt="Ananas Garden" className="h-10 w-10 object-contain" />
+            <img src={APP_LOGO} alt="Ananas Garden" className="h-14 w-14 object-contain" />
             <span className="text-2xl font-bold tracking-tight">
               Ananas Garden
             </span>
@@ -175,7 +175,7 @@ export default function Header() {
                   className="flex items-center gap-3 cursor-pointer"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <img src={APP_LOGO} alt="Ananas Garden" className="h-10 w-10 object-contain" />
+                  <img src={APP_LOGO} alt="Ananas Garden" className="h-14 w-14 object-contain" />
                   <span className="text-2xl font-bold">Ananas Garden</span>
                 </div>
               </Link>
