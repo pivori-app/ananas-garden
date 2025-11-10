@@ -12,8 +12,10 @@ import {
   ShoppingBag,
   Star,
   Trophy,
+  Gift,
 } from "lucide-react";
 import { Link } from "wouter";
+import ReviewForm from "@/components/ReviewForm";
 
 export default function Dashboard() {
   const { user, loading, isAuthenticated } = useAuth();
@@ -127,11 +129,12 @@ export default function Dashboard() {
 
         {/* Tabs */}
         <Tabs defaultValue="orders" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="orders">Commandes</TabsTrigger>
             <TabsTrigger value="favorites">Favoris</TabsTrigger>
             <TabsTrigger value="loyalty">Fidélité</TabsTrigger>
             <TabsTrigger value="subscriptions">Abonnements</TabsTrigger>
+            <TabsTrigger value="referral">Parrainage</TabsTrigger>
             <TabsTrigger value="testimonials">Avis</TabsTrigger>
           </TabsList>
 
@@ -302,8 +305,36 @@ export default function Dashboard() {
             </Card>
           </TabsContent>
 
+          {/* Referral Tab */}
+          <TabsContent value="referral" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Programme de Parrainage</CardTitle>
+                <CardDescription>Invitez vos amis et gagnez des points</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Gift className="w-16 h-16 mx-auto mb-4 text-sage" />
+                  <h3 className="text-xl font-semibold mb-2">Parrainez vos amis</h3>
+                  <p className="text-charcoal/70 mb-6 max-w-md mx-auto">
+                    Gagnez 100 points de fidélité pour chaque ami qui effectue sa première commande avec votre code !
+                  </p>
+                  <Link href="/referral">
+                    <Button className="bg-sage hover:bg-sage/90">
+                      Accéder au programme
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Testimonials Tab */}
           <TabsContent value="testimonials" className="space-y-4">
+            {/* Review Form */}
+            <ReviewForm onSuccess={() => window.location.reload()} />
+
+            {/* My Reviews */}
             <Card>
               <CardHeader>
                 <CardTitle>Mes Avis</CardTitle>
@@ -336,6 +367,13 @@ export default function Dashboard() {
                           <div className="text-sm text-charcoal/60 mt-2">
                             {testimonial.bouquetName}
                           </div>
+                        )}
+                        {testimonial.imageUrl && (
+                          <img
+                            src={testimonial.imageUrl}
+                            alt="Photo du bouquet"
+                            className="mt-3 rounded-lg max-w-xs w-full object-cover"
+                          />
                         )}
                       </div>
                     ))}

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, ShoppingCart, User, LogOut, LayoutDashboard, UserCircle } from "lucide-react";
+import { Menu, ShoppingCart, User, LogOut, LayoutDashboard, UserCircle, Gift } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import {
@@ -51,6 +51,7 @@ export default function Header() {
     { href: "/", label: "Accueil" },
     { href: "/create", label: "Créer un bouquet" },
     { href: "/scanner", label: "Scanner" },
+    { href: "/blog", label: "Blog" },
     { href: "/cart", label: "Panier", badge: cartItemCount },
   ];
 
@@ -131,6 +132,14 @@ export default function Header() {
                     <div className="flex items-center cursor-pointer w-full">
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       <span>Tableau de bord</span>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/referral">
+                    <div className="flex items-center cursor-pointer w-full">
+                      <Gift className="mr-2 h-4 w-4" />
+                      <span>Parrainage</span>
                     </div>
                   </Link>
                 </DropdownMenuItem>

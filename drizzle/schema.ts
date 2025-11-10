@@ -251,3 +251,26 @@ export const referrals = mysqlTable("referrals", {
 
 export type Referral = typeof referrals.$inferSelect;
 export type InsertReferral = typeof referrals.$inferInsert;
+
+/**
+ * Table des articles de blog sur le langage des fleurs
+ */
+export const blogPosts = mysqlTable("blogPosts", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  excerpt: text("excerpt").notNull(), // Résumé court pour la liste
+  content: text("content").notNull(), // Contenu complet en markdown
+  coverImageUrl: text("coverImageUrl"),
+  category: mysqlEnum("category", ["langage-des-fleurs", "conseils", "tendances", "histoire", "diy"]).notNull(),
+  tags: text("tags"), // JSON array
+  authorName: varchar("authorName", { length: 200 }).default("Ananas Garden").notNull(),
+  readTime: int("readTime").default(5).notNull(), // Temps de lecture en minutes
+  isPublished: int("isPublished").default(1).notNull(), // 0 = brouillon, 1 = publié
+  publishedAt: timestamp("publishedAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type InsertBlogPost = typeof blogPosts.$inferInsert;

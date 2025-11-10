@@ -13,6 +13,8 @@ import {
   loyaltyPoints,
   loyaltyTransactions,
   testimonials,
+  blogPosts,
+  referrals,
   InsertBouquet,
   InsertCartItem,
   InsertOrder,
@@ -565,4 +567,189 @@ export async function getUserTestimonials(userId: number) {
     .from(testimonials)
     .where(eq(testimonials.userId, userId))
     .orderBy(desc(testimonials.createdAt));
+}
+
+// ============================================
+// Blog Posts Functions
+// ============================================
+
+export async function getAllBlogPosts() {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(blogPosts)
+    .where(eq(blogPosts.isPublished, 1))
+    .orderBy(desc(blogPosts.publishedAt));
+}
+
+export async function getBlogPostBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const results = await db
+    .select()
+    .from(blogPosts)
+    .where(eq(blogPosts.slug, slug))
+    .limit(1);
+
+  return results.length > 0 ? results[0] : null;
+}
+
+export async function getBlogPostsByCategory(category: string) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(blogPosts)
+    .where(and(
+      eq(blogPosts.isPublished, 1),
+      eq(blogPosts.category, category as any)
+    ))
+    .orderBy(desc(blogPosts.publishedAt));
+}
+
+export async function getRecentBlogPosts(limit: number = 3) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(blogPosts)
+    .where(eq(blogPosts.isPublished, 1))
+    .orderBy(desc(blogPosts.publishedAt))
+    .limit(limit);
+}
+
+// ============================================
+// Referral Functions
+// ============================================
+
+export async function createReferralCode(userId: number, code: string) {
+  const db = await getDb();
+  if (!db) return null;
+
+  try {
+    await db.insert(referrals).values({
+      referrerId: userId,
+      referralCode: code,
+      status: "pending",
+    });
+    return code;
+  } catch (error) {
+    console.error("Error creating referral code:", error);
+    return null;
+  }
+}
+
+export async function getReferralByCode(code: string) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const results = await db
+    .select()
+    .from(referrals)
+    .where(eq(referrals.referralCode, code))
+    .limit(1);
+
+  return results.length > 0 ? results[0] : null;
+}
+
+export async function getUserReferralCode(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const results = await db
+    .select()
+    .from(referrals)
+    .where(and(
+      eq(referrals.referrerId, userId),
+      eq(referrals.referredUserId, null as any)
+    ))
+    .limit(1);
+
+  return results.length > 0 ? results[0] : null;
+}
+
+export async function getUserReferrals(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(referrals)
+    .where(eq(referrals.referrerId, userId))
+    .orderBy(desc(referrals.createdAt));
+}
+
+export async function trackReferral(referralCode: string, referredUserId: number) {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    const referral = await getReferralByCode(referralCode);
+    if (!referral || referral.referredUserId) return false;
+
+    await db
+      .update(referrals)
+      .set({
+        referredUserId,
+        status: "completed",
+        completedAt: new Date(),
+      })
+      .where(eq(referrals.id, referral.id));
+
+    return true;
+  } catch (error) {
+    console.error("Error tracking referral:", error);
+    return false;
+  }
+}
+
+export async function rewardReferral(referralId: number, points: number) {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    const referral = await db
+      .select()
+      .from(referrals)
+      .where(eq(referrals.id, referralId))
+      .limit(1);
+
+    if (referral.length === 0 || referral[0].status === "rewarded") return false;
+
+    // Award points to referrer
+    await addLoyaltyPoints(referral[0].referrerId, points, "bonus", `Parrainage réussi - ${points} points bonus`);
+
+    // Update referral status
+    await db
+      .update(referrals)
+      .set({
+        status: "rewarded",
+        pointsAwarded: points,
+      })
+      .where(eq(referrals.id, referralId));
+
+    return true;
+  } catch (error) {
+    console.error("Error rewarding referral:", error);
+    return false;
+  }
+}
+
+export async function getReferralStats(userId: number) {
+  const db = await getDb();
+  if (!db) return { total: 0, completed: 0, rewarded: 0, totalPoints: 0 };
+
+  const allReferrals = await getUserReferrals(userId);
+  
+  return {
+    total: allReferrals.length,
+    completed: allReferrals.filter(r => r.status === "completed" || r.status === "rewarded").length,
+    rewarded: allReferrals.filter(r => r.status === "rewarded").length,
+    totalPoints: allReferrals.reduce((sum, r) => sum + (r.pointsAwarded || 0), 0),
+  };
 }

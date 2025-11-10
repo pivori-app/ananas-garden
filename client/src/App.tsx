@@ -26,6 +26,9 @@ import CGV from "./pages/CGV";
 import MentionsLegales from "./pages/MentionsLegales";
 import PolitiqueConfidentialite from "./pages/PolitiqueConfidentialite";
 import Contact from "./pages/Contact";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import Referral from "./pages/Referral";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -54,6 +57,9 @@ function Router() {
         <Route path="/mentions-legales" component={MentionsLegales} />
         <Route path="/politique-confidentialite" component={PolitiqueConfidentialite} />
         <Route path="/contact" component={Contact} />
+        <Route path="/blog" component={Blog} />
+        <Route path="/blog/:slug" component={BlogPost} />
+        <Route path="/referral" component={Referral} />
         <Route path={"/404"} component={NotFound} />
         {/* Final fallback route */}
         <Route component={NotFound} />

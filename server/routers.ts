@@ -494,6 +494,64 @@ export const appRouter = router({
       return { success: true };
     }),
   }),
+
+  blog: router({
+    list: publicProcedure.query(async () => {
+      const { getAllBlogPosts } = await import("./db");
+      return await getAllBlogPosts();
+    }),
+    getBySlug: publicProcedure
+      .input(z.object({ slug: z.string() }))
+      .query(async ({ input }) => {
+        const { getBlogPostBySlug } = await import("./db");
+        return await getBlogPostBySlug(input.slug);
+      }),
+    getByCategory: publicProcedure
+      .input(z.object({ category: z.string() }))
+      .query(async ({ input }) => {
+        const { getBlogPostsByCategory } = await import("./db");
+        return await getBlogPostsByCategory(input.category);
+      }),
+    getRecent: publicProcedure
+      .input(z.object({ limit: z.number().default(3) }).optional())
+      .query(async ({ input }) => {
+        const { getRecentBlogPosts } = await import("./db");
+        return await getRecentBlogPosts(input?.limit || 3);
+      }),
+  }),
+
+  referral: router({
+    getMyCode: protectedProcedure.query(async ({ ctx }) => {
+      const { getUserReferralCode, createReferralCode } = await import("./db");
+      
+      // Check if user already has a referral code
+      let referral = await getUserReferralCode(ctx.user.id);
+      
+      // If not, create one
+      if (!referral) {
+        const code = `ANANAS${ctx.user.id}${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+        await createReferralCode(ctx.user.id, code);
+        referral = await getUserReferralCode(ctx.user.id);
+      }
+      
+      return referral;
+    }),
+    getMyReferrals: protectedProcedure.query(async ({ ctx }) => {
+      const { getUserReferrals } = await import("./db");
+      return await getUserReferrals(ctx.user.id);
+    }),
+    getStats: protectedProcedure.query(async ({ ctx }) => {
+      const { getReferralStats } = await import("./db");
+      return await getReferralStats(ctx.user.id);
+    }),
+    trackReferral: publicProcedure
+      .input(z.object({ referralCode: z.string(), referredUserId: z.number() }))
+      .mutation(async ({ input }) => {
+        const { trackReferral } = await import("./db");
+        const success = await trackReferral(input.referralCode, input.referredUserId);
+        return { success };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

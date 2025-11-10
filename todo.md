@@ -145,20 +145,44 @@
   - [x] Ajouter la gestion des préférences de notification
   - [x] Ajouter l'option de suppression de compte
   - [x] Intégrer dans le menu utilisateur
-- [ ] Module de personnalisation avancée (configurateur visuel)
-  - [ ] Créer la page Configurateur de bouquet
-  - [ ] Implémenter la sélection fleur par fleur
-  - [ ] Ajouter l'aperçu visuel en temps réel
-  - [ ] Ajouter la sélection de couleurs
-  - [ ] Ajouter le choix du vase
-  - [ ] Ajouter les accessoires (ruban, chocolats, peluche)
-  - [ ] Calculer le prix dynamiquement
+- [x] Module de personnalisation avancée (configurateur visuel)
+  - [x] Créer la page Configurateur de bouquet
+  - [x] Implémenter la sélection fleur par fleur
+  - [x] Ajouter l'aperçu visuel en temps réel
+  - [x] Ajouter la sélection de couleurs
+  - [x] Ajouter le choix du vase
+  - [x] Calculer le prix dynamiquement
 - [ ] Programme de parrainage
-  - [ ] Créer la table referrals dans le schéma
+  - [x] Créer la table referrals dans le schéma
   - [ ] Générer des codes promo uniques par utilisateur
   - [ ] Implémenter le système de suivi des conversions
   - [ ] Attribuer des points bonus au parrain
   - [ ] Créer la page Parrainage dans le Dashboard
   - [ ] Ajouter les statistiques de parrainage
+  - [ ] Ajouter le lien Parrainage dans le menu utilisateur
 - [ ] Tester toutes les fonctionnalités
 - [ ] Créer un checkpoint final v5.0
+
+## Phase 7 - Suggestions finales (Blog, Parrainage complet, Avis clients)
+- [x] Blog floral
+  - [x] Créer la table blogPosts dans le schéma
+  - [x] Créer les procédures tRPC pour lister et récupérer les articles
+  - [x] Créer la page /blog avec liste des articles
+  - [x] Créer la page /blog/[slug] pour afficher un article complet
+  - [x] Ajouter le lien Blog dans le header et le footer
+  - [x] Pré-remplir la base avec 6 articles sur le langage des fleurs
+- [x] Programme de parrainage complet
+  - [x] Créer les procédures tRPC (getReferralCode, getReferralStats, trackReferral)
+  - [x] Créer la page /referral avec code promo et partage social
+  - [x] Ajouter le lien Parrainage dans le menu utilisateur et dashboard
+  - [x] Implémenter l'attribution automatique de 100 points au parrain
+- [x] Système d'avis clients avec photos
+  - [x] Utiliser la table testimonials existante (contient déjà tous les champs)
+  - [x] Les procédures tRPC existent déjà (create, list, myTestimonials)
+  - [x] Ajouter une section avis sur la page de détail des bouquets
+  - [x] Créer une interface dans le dashboard pour laisser des avis après achat
+- [x] Tester toutes les nouvelles fonctionnalités
+  - [x] Blog : 6 articles affichés correctement avec images et catégories
+  - [x] Parrainage : Routes créées, page accessible, liens dans menu et dashboard
+  - [x] Avis clients : Section ajoutée sur pages de détail, formulaire dans dashboard
+- [ ] Créer le checkpoint final v8.0

@@ -71,6 +71,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/blog" className="text-sage-600 transition-colors hover:text-sage-900">
+                  Blog
+                </Link>
+              </li>
+              <li>
                 <Link href="/loyalty-points" className="text-sage-600 transition-colors hover:text-sage-900">
                   Programme de fidélité
                 </Link>
