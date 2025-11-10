@@ -126,4 +126,31 @@
   - [x] Ajouter la gestion des points de fidélité
   - [x] Ajouter la gestion des abonnements
 - [x] Tester toutes les fonctionnalités
-- [ ] Créer un checkpoint final v4.0
+- [x] Créer un checkpoint final v4.0
+
+## Phase 6 - Fonctionnalités avancées v5.0
+- [ ] Système de notifications push
+  - [x] Créer la table notifications dans le schéma
+  - [x] Implémenter l'API de notifications côté serveur
+  - [x] Créer les procédures tRPC pour les notifications
+  - [x] Ajouter les notifications de livraison imminente
+  - [x] Ajouter les notifications de promotions personnalisées
+  - [x] Ajouter les rappels d'anniversaire pour bouquets récurrents
+  - [ ] Créer le centre de notifications dans le Dashboard
+- [ ] Module de personnalisation avancée (configurateur visuel)
+  - [ ] Créer la page Configurateur de bouquet
+  - [ ] Implémenter la sélection fleur par fleur
+  - [ ] Ajouter l'aperçu visuel en temps réel
+  - [ ] Ajouter la sélection de couleurs
+  - [ ] Ajouter le choix du vase
+  - [ ] Ajouter les accessoires (ruban, chocolats, peluche)
+  - [ ] Calculer le prix dynamiquement
+- [ ] Programme de parrainage
+  - [ ] Créer la table referrals dans le schéma
+  - [ ] Générer des codes promo uniques par utilisateur
+  - [ ] Implémenter le système de suivi des conversions
+  - [ ] Attribuer des points bonus au parrain
+  - [ ] Créer la page Parrainage dans le Dashboard
+  - [ ] Ajouter les statistiques de parrainage
+- [ ] Tester toutes les fonctionnalités
+- [ ] Créer un checkpoint final v5.0

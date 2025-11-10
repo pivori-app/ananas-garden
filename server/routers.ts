@@ -5,6 +5,12 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { getRecommendationsForUser, getPopularBouquets, getRecommendationsByOccasion, getRecommendationsByBudget } from "./recommendations";
 import { createSubscription, cancelSubscription, pauseSubscription, resumeSubscription, getUserSubscriptions } from "./subscriptionManager";
+import {
+  getUserNotifications,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+  getUnreadCount,
+} from "./notificationManager";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -468,6 +474,25 @@ export const appRouter = router({
         const { getUserOrders } = await import("./db");
         return await getUserOrders(ctx.user.id);
       }),
+  }),
+
+  notifications: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return await getUserNotifications(ctx.user.id);
+    }),
+    unreadCount: protectedProcedure.query(async ({ ctx }) => {
+      return await getUnreadCount(ctx.user.id);
+    }),
+    markAsRead: protectedProcedure
+      .input(z.object({ notificationId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        await markNotificationAsRead(input.notificationId, ctx.user.id);
+        return { success: true };
+      }),
+    markAllAsRead: protectedProcedure.mutation(async ({ ctx }) => {
+      await markAllNotificationsAsRead(ctx.user.id);
+      return { success: true };
+    }),
   }),
 });
 
