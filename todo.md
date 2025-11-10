@@ -55,4 +55,12 @@
 - [x] Ajouter le menu de navigation (Accueil, Créer, Panier)
 - [x] Intégrer le Header dans toutes les pages
 - [x] Rendre le header responsive avec menu mobile
-- [ ] Créer un nouveau checkpoint après intégration
+- [x] Créer un nouveau checkpoint après intégration
+
+## Améliorations Phase 2
+- [x] Corriger les erreurs console (ReferenceError: z is not defined)
+- [x] Créer un logo personnalisé Ananas Garden
+- [x] Développer la page catalogue de fleurs (/catalog)
+- [x] Ajouter des filtres par émotion, couleur, occasion
+- [x] Implémenter l'animation du compteur panier
+- [ ] Créer un checkpoint final

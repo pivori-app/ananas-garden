@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, ShoppingCart, Flower2 } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
+import { APP_LOGO } from "@/const";
 import { trpc } from "@/lib/trpc";
 
 export default function Header() {
@@ -22,6 +23,17 @@ export default function Header() {
   );
 
   const cartItemCount = cartItems?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+  const prevCountRef = useRef(cartItemCount);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
+
+  useEffect(() => {
+    if (cartItemCount > prevCountRef.current) {
+      setShouldAnimate(true);
+      const timer = setTimeout(() => setShouldAnimate(false), 600);
+      return () => clearTimeout(timer);
+    }
+    prevCountRef.current = cartItemCount;
+  }, [cartItemCount]);
 
   const navItems = [
     { href: "/", label: "Accueil" },
@@ -39,8 +51,8 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/">
-          <a className="flex items-center gap-2 transition-opacity hover:opacity-80">
-            <Flower2 className="h-8 w-8 text-primary" />
+          <a className="flex items-center gap-3 transition-opacity hover:opacity-80">
+            <img src={APP_LOGO} alt="Ananas Garden" className="h-10 w-10 object-contain" />
             <span className="text-2xl font-bold tracking-tight">
               Ananas Garden
             </span>
@@ -60,7 +72,11 @@ export default function Header() {
               >
                 {item.label}
                 {item.badge !== undefined && item.badge > 0 && (
-                  <span className="absolute -right-3 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
+                  <span 
+                    className={`absolute -right-3 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground transition-transform ${
+                      shouldAnimate && item.href === "/cart" ? "animate-bounce" : ""
+                    }`}
+                  >
                     {item.badge}
                   </span>
                 )}
@@ -81,10 +97,10 @@ export default function Header() {
             <div className="flex flex-col gap-6 pt-8">
               <Link href="/">
                 <a 
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-3"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <Flower2 className="h-8 w-8 text-primary" />
+                  <img src={APP_LOGO} alt="Ananas Garden" className="h-10 w-10 object-contain" />
                   <span className="text-2xl font-bold">Ananas Garden</span>
                 </a>
               </Link>
@@ -102,7 +118,11 @@ export default function Header() {
                     >
                       <span>{item.label}</span>
                       {item.badge !== undefined && item.badge > 0 && (
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-sm text-primary-foreground">
+                        <span 
+                          className={`flex h-6 w-6 items-center justify-center rounded-full bg-primary text-sm text-primary-foreground transition-transform ${
+                            shouldAnimate && item.href === "/cart" ? "animate-bounce" : ""
+                          }`}
+                        >
                           {item.badge}
                         </span>
                       )}

@@ -37,8 +37,8 @@ export default function Home() {
               </Link>
               
               <Link href="/catalog">
-                <Button size="lg" variant="outline" className="h-14 px-8 text-lg">
-                  <Flower2 className="mr-2 h-5 w-5" />
+                <Button variant="outline" size="lg" className="gap-2">
+                  <Flower2 className="h-5 w-5" />
                   Explorer les fleurs
                 </Button>
               </Link>
