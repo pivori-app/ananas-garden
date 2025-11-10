@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, ShoppingCart } from "lucide-react";
 import { APP_LOGO } from "@/const";
 import { trpc } from "@/lib/trpc";
@@ -51,20 +51,20 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/">
-          <a className="flex items-center gap-3 transition-opacity hover:opacity-80">
+          <div className="flex items-center gap-3 transition-opacity hover:opacity-80 cursor-pointer">
             <img src={APP_LOGO} alt="Ananas Garden" className="h-10 w-10 object-contain" />
             <span className="text-2xl font-bold tracking-tight">
               Ananas Garden
             </span>
-          </a>
+          </div>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-6 md:flex">
           {navItems.map((item) => (
             <Link key={item.href} href={item.href}>
-              <a
-                className={`relative text-sm font-medium transition-colors hover:text-primary ${
+              <div
+                className={`relative text-sm font-medium transition-colors hover:text-primary cursor-pointer ${
                   isActive(item.href)
                     ? "text-foreground"
                     : "text-muted-foreground"
@@ -80,7 +80,7 @@ export default function Header() {
                     {item.badge}
                   </span>
                 )}
-              </a>
+              </div>
             </Link>
           ))}
         </nav>
@@ -94,23 +94,26 @@ export default function Header() {
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <SheetHeader className="sr-only">
+              <SheetTitle>Menu de navigation</SheetTitle>
+            </SheetHeader>
             <div className="flex flex-col gap-6 pt-8">
               <Link href="/">
-                <a 
-                  className="flex items-center gap-3"
+                <div 
+                  className="flex items-center gap-3 cursor-pointer"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <img src={APP_LOGO} alt="Ananas Garden" className="h-10 w-10 object-contain" />
                   <span className="text-2xl font-bold">Ananas Garden</span>
-                </a>
+                </div>
               </Link>
 
               <nav className="flex flex-col gap-4">
                 {navItems.map((item) => (
                   <Link key={item.href} href={item.href}>
-                    <a
+                    <div
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center justify-between rounded-lg px-4 py-3 text-lg font-medium transition-colors ${
+                      className={`flex items-center justify-between rounded-lg px-4 py-3 text-lg font-medium transition-colors cursor-pointer ${
                         isActive(item.href)
                           ? "bg-primary/10 text-primary"
                           : "text-foreground hover:bg-muted"
@@ -126,7 +129,7 @@ export default function Header() {
                           {item.badge}
                         </span>
                       )}
-                    </a>
+                    </div>
                   </Link>
                 ))}
               </nav>

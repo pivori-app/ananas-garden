@@ -63,4 +63,9 @@
 - [x] Développer la page catalogue de fleurs (/catalog)
 - [x] Ajouter des filtres par émotion, couleur, occasion
 - [x] Implémenter l'animation du compteur panier
-- [ ] Créer un checkpoint final
+- [x] Créer un checkpoint final
+
+## Corrections d'erreurs
+- [x] Corriger l'erreur DialogTitle manquant pour l'accessibilité
+- [x] Corriger les balises <a> imbriquées dans Header
+- [ ] Créer un checkpoint après corrections
