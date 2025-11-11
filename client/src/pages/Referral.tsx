@@ -8,7 +8,6 @@ import { Copy, Check, Share2, Gift, Users, TrendingUp, Loader2, Facebook, Twitte
 import { useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function Referral() {
@@ -63,7 +62,6 @@ export default function Referral() {
   if (loading || codeLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#FAF9F6] to-white">
-        <Header />
         <main className="flex-1 flex items-center justify-center pt-24">
           <Loader2 className="w-8 h-8 animate-spin text-[#8B9D83]" />
         </main>
@@ -75,7 +73,6 @@ export default function Referral() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#FAF9F6] to-white">
-        <Header />
         <main className="flex-1 flex items-center justify-center pt-24">
           <Card className="max-w-md mx-4">
             <CardHeader>
@@ -100,8 +97,6 @@ export default function Referral() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#FAF9F6] to-white">
-      <Header />
-      
       <main className="flex-1 pt-24 pb-16">
         <div className="container max-w-6xl">
           <Button

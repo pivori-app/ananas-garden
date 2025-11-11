@@ -204,4 +204,12 @@
 - [x] Ajouter bouton retour sur CGV (déjà présent)
 - [x] Ajouter bouton retour sur LoyaltyPoints (déjà présent)
 - [x] Tester tous les boutons de retour (Account testé avec succès)
-- [ ] Créer le checkpoint final
+- [x] Créer le checkpoint final (v8.2)
+
+## Phase 10 - Correction des doublons de header
+- [x] Analyser Blog.tsx pour identifier le doublon de header
+- [x] Analyser Referral.tsx pour identifier le doublon de header
+- [x] Corriger le doublon dans Blog.tsx (supprimé <Header /> dupliqué)
+- [x] Corriger le doublon dans Referral.tsx (supprimé 3 <Header /> dupliqués)
+- [x] Tester les pages corrigées (Blog et Referral testés avec succès)
+- [ ] Créer le checkpoint final v8.3

@@ -4,7 +4,6 @@ import { Calendar, Clock, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 const categoryLabels: Record<string, string> = {
@@ -28,8 +27,6 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#FAF9F6] to-white">
-      <Header />
-      
       <main className="flex-1 pt-24 pb-16">
         <div className="container max-w-7xl">
           {/* Hero Section */}
