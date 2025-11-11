@@ -246,4 +246,18 @@
   - [x] Page d'accueil : Header transparent confirmé
   - [x] Page catalogue : Header transparent confirmé
   - [x] Logo PNG avec canal alpha visible sans fond
-- [ ] Créer le checkpoint final v9.1
+- [x] Créer le checkpoint final v9.1 (631cf3a2)
+
+## Phase 13 - Animation fluide du header au scroll
+- [x] Implémenter la détection du scroll avec useState et useEffect
+- [x] Ajouter l'état isScrolled pour tracker la position du scroll (seuil: 50px)
+- [x] Ajouter le fond semi-transparent (bg-background/95) quand scrollé
+- [x] Ajouter la transition fluide (transition-all duration-300)
+- [x] Ajouter une ombre portée (shadow-sm) quand scrollé
+- [x] Ajouter backdrop-blur pour effet de flou
+- [x] Tester l'animation sur différentes pages
+  - [x] Page d'accueil : Animation fluide confirmée
+  - [x] Header transparent en haut, semi-transparent après scroll (>50px)
+  - [x] Fond blanc/beige avec ombre portée visible
+  - [x] Transition fluide (300ms) sans saccades
+- [ ] Créer le checkpoint final v9.2
