@@ -179,6 +179,16 @@ export default function Catalog() {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredFlowers.map((flower) => (
                 <Card key={flower.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  {/* Image de la fleur */}
+                  {flower.imageUrl && (
+                    <div className="aspect-video w-full overflow-hidden bg-muted">
+                      <img 
+                        src={flower.imageUrl} 
+                        alt={flower.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl">{flower.name}</CardTitle>
                     <CardDescription className="text-base">

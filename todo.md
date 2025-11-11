@@ -212,4 +212,22 @@
 - [x] Corriger le doublon dans Blog.tsx (supprimé <Header /> dupliqué)
 - [x] Corriger le doublon dans Referral.tsx (supprimé 3 <Header /> dupliqués)
 - [x] Tester les pages corrigées (Blog et Referral testés avec succès)
-- [ ] Créer le checkpoint final v8.3
+- [x] Créer le checkpoint final v8.3
+
+## Phase 11 - Corrections finales et intégration GitHub
+- [x] Ajouter les photos des fleurs dans le catalogue
+  - [x] Vérifier la structure actuelle des données de fleurs
+  - [x] Ajouter des URLs d'images pour chaque fleur (33/33 fleurs mises à jour)
+  - [x] Les images s'affichent automatiquement dans Catalog.tsx
+- [x] Corriger le logo pour supprimer le fond PNG
+  - [x] Trouver un logo avec fond transparent (logo #8 sélectionné)
+  - [x] Copier le logo dans client/public/ananas-logo-transparent.png
+  - [x] Mettre à jour APP_LOGO dans const.ts
+- [x] Intégrer le code dans GitHub
+  - [x] Configurer le remote GitHub (github)
+  - [x] Pousser le code vers pivori-app/ananas-garden (383 objets, branche master)
+- [x] Tester toutes les corrections
+  - [x] Catalogue : Les 33 fleurs affichent maintenant leurs images
+  - [x] Logo : Nouveau logo transparent visible dans le header
+  - [x] GitHub : Code poussé avec succès (383 objets)
+- [ ] Créer le checkpoint final v9.0
