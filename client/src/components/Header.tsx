@@ -220,6 +220,23 @@ export default function Header() {
                     </div>
                   </Link>
                 ))}
+                
+                {/* Mon compte - visible uniquement si connecté */}
+                {isAuthenticated && (
+                  <Link href="/account">
+                    <div
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center gap-3 rounded-lg px-4 py-3 text-lg font-medium transition-colors cursor-pointer ${
+                        isActive("/account")
+                          ? "bg-primary/10 text-primary"
+                          : "text-foreground hover:bg-muted"
+                      }`}
+                    >
+                      <User className="h-5 w-5" />
+                      <span>Mon compte</span>
+                    </div>
+                  </Link>
+                )}
               </nav>
             </div>
           </SheetContent>

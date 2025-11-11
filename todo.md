@@ -260,4 +260,16 @@
   - [x] Header transparent en haut, semi-transparent après scroll (>50px)
   - [x] Fond blanc/beige avec ombre portée visible
   - [x] Transition fluide (300ms) sans saccades
-- [ ] Créer le checkpoint final v9.2
+- [x] Créer le checkpoint final v9.2 (77038587)
+
+## Phase 14 - Ajouter "Mon compte" dans le menu mobile
+- [x] Ajouter le lien "Mon compte" / "Dashboard" dans le menu latéral mobile
+- [x] Afficher le lien uniquement si l'utilisateur est connecté (isAuthenticated)
+- [x] Ajouter l'icône User pour cohérence visuelle
+- [x] Positionner après les navItems standards
+- [x] Tester le menu mobile
+  - [x] Menu mobile ouvert avec succès
+  - [x] Lien "Mon compte" visible avec icône User
+  - [x] Positionné après Panier comme prévu
+  - [x] Affichage conditionnel (isAuthenticated) fonctionnel
+- [ ] Créer le checkpoint final v9.3
