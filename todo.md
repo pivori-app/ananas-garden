@@ -230,4 +230,20 @@
   - [x] Catalogue : Les 33 fleurs affichent maintenant leurs images
   - [x] Logo : Nouveau logo transparent visible dans le header
   - [x] GitHub : Code poussé avec succès (383 objets)
-- [ ] Créer le checkpoint final v9.0
+- [x] Créer le checkpoint final v9.0 (cde9cb3e)
+
+## Phase 12 - Header transparent sans arrière-plan
+- [x] Analyser le composant Header.tsx pour identifier les arrière-plans
+- [x] Supprimer tous les backgrounds du header (transparent)
+  - [x] Supprimé bg-background/95
+  - [x] Supprimé backdrop-blur
+  - [x] Supprimé supports-[backdrop-filter]:bg-background/60
+  - [x] Supprimé border-b border-border/40
+- [x] Vérifier que le logo PNG s'affiche avec canal alpha (ananas-logo-transparent.png)
+- [x] Supprimer le pattern damier/checkerboard (aucun fond = pas de pattern)
+- [x] Maintenir la transparence sur tous les états (hover, active)
+- [x] Tester le header sur différentes pages
+  - [x] Page d'accueil : Header transparent confirmé
+  - [x] Page catalogue : Header transparent confirmé
+  - [x] Logo PNG avec canal alpha visible sans fond
+- [ ] Créer le checkpoint final v9.1
