@@ -758,4 +758,10 @@
 - [x] Vérifier le code de Home.tsx pour les boutons "Explorer les fleurs" et "Scanner un bouquet"
 - [x] Tester les boutons sur le serveur local - Fonctionnels avec window.location.href
 - [x] Corriger les liens - Remplacé Link par window.location.href pour navigation directe
-- [ ] Créer un checkpoint avec les corrections
+- [x] Créer un checkpoint avec les corrections (v15.9)
+
+## Audit déploiement Vercel, Supabase, GitHub
+- [x] Auditer la configuration GitHub (branches, webhooks, secrets, GitHub Actions)
+- [x] Auditer le déploiement Vercel (configuration, variables d'environnement, build, domaines)
+- [x] Auditer la configuration Supabase (base de données, authentification, sécurité, RLS)
+- [x] Générer un rapport d'audit complet avec recommandations et plan d'action (audit-deploiement.md)
