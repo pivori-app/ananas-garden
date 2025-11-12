@@ -693,4 +693,35 @@
 - [x] Corriger l'erreur "Property 'query' does not exist" dans Scanner.tsx (ligne 103)
 - [x] Corriger l'erreur "Parameter 'item' implicitly has an 'any' type" dans Wishlist.tsx
 - [x] Tester que le serveur compile sans erreurs TypeScript
-- [ ] Créer le checkpoint v15.5
+- [x] Créer le checkpoint v15.5
+
+## Phase 30 - Déploiement GitHub + Supabase + Vercel
+- [x] Vérifier l'état actuel du repository GitHub pivori-app/ananas-garden
+- [x] Configurer Git avec les credentials appropriés
+- [x] Commit et push du code vers GitHub
+- [x] Analyser l'erreur Vercel "Function Runtimes must have a valid version"
+- [x] Vérifier si vercel.json existe et contient une config PHP invalide
+- [x] Créer ou corriger vercel.json avec la configuration Node.js/Vite correcte
+- [x] Pousser les corrections vers GitHub
+- [ ] Authentifier Vercel MCP et lister les projets existants
+- [ ] Créer ou identifier le projet Vercel ananas-garden
+- [ ] Configurer les variables d'environnement Vercel
+- [ ] Déclencher le déploiement et vérifier le statut
+- [ ] Récupérer l'URL de production et tester l'application
+- [ ] Créer et configurer le projet Supabase
+- [ ] Migrer les schémas de base de données vers Supabase
+- [ ] Configurer les variables d'environnement Supabase
+- [ ] PROBLÈME: Vercel sert le code source au lieu de l'application compilée
+- [ ] Analyser les logs de build Vercel pour identifier l'erreur
+- [ ] Corriger la configuration vercel.json (outputDirectory, rewrites)
+- [ ] Vérifier la structure du build local (dist/public)
+- [ ] Redéployer et vérifier que l'application s'affiche correctement
+- [ ] Créer le checkpoint final v16.0
+
+## Phase Déploiement - Correction configuration Vercel
+- [x] Identifier le problème : Vercel sert dist/index.js au lieu de dist/public/index.html
+- [x] Corriger vercel.json avec outputDirectory: "dist/public"
+- [x] Pousser les corrections vers GitHub (commits 37808e2, a4b148b, 6a84144)
+- [ ] Résoudre le problème de webhook GitHub → Vercel (project.live = false)
+- [ ] Créer un checkpoint pour déclencher le déploiement automatique
+- [ ] Vérifier que l'application React s'affiche correctement sur ananas-garden.vercel.app
