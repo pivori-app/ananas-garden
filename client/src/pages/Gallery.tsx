@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 export default function Gallery() {
   const [selectedImage, setSelectedImage] = useState<{
@@ -10,8 +12,29 @@ export default function Gallery() {
     title: string;
     description: string | null;
   } | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState<string | null>(null);
 
   const { data: galleryItems, isLoading } = trpc.gallery.list.useQuery();
+
+  // Extract unique types
+  const types = useMemo(() => {
+    if (!galleryItems) return [];
+    const uniqueTypes = Array.from(new Set(galleryItems.map(item => item.bouquetType).filter(Boolean)));
+    return uniqueTypes as string[];
+  }, [galleryItems]);
+
+  // Filter gallery items
+  const filteredItems = useMemo(() => {
+    if (!galleryItems) return [];
+    return galleryItems.filter(item => {
+      const matchesSearch = searchQuery === "" ||
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchesType = !selectedType || item.bouquetType === selectedType;
+      return matchesSearch && matchesType;
+    });
+  }, [galleryItems, searchQuery, selectedType]);
 
   if (isLoading) {
     return (
@@ -30,9 +53,69 @@ export default function Gallery() {
             <h1 className="text-4xl md:text-5xl font-serif font-bold text-charcoal mb-6">
               Galerie de Réalisations
             </h1>
-            <p className="text-lg text-charcoal/70">
+            <p className="text-lg text-charcoal/70 mb-8">
               Découvrez nos créations florales uniques. Chaque bouquet raconte une histoire et exprime des émotions à travers le langage des fleurs.
             </p>
+
+            {/* Search Bar */}
+            <div className="max-w-xl mx-auto">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-charcoal/40" />
+                <Input
+                  placeholder="Rechercher un bouquet..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 h-14 text-lg bg-white/80 backdrop-blur-sm border-sage-200 focus:border-sage-400"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Filters Section */}
+      <section className="py-8 border-b border-sage-200 bg-white/50">
+        <div className="container">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-charcoal/70">
+              <Filter className="h-4 w-4" />
+              <span className="font-medium">Filtrer par type:</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Badge
+                variant={selectedType === null ? "default" : "outline"}
+                className="cursor-pointer hover:bg-sage-100 transition-colors"
+                onClick={() => setSelectedType(null)}
+              >
+                Tous ({galleryItems?.length || 0})
+              </Badge>
+              {types.map((type) => (
+                <Badge
+                  key={type}
+                  variant={selectedType === type ? "default" : "outline"}
+                  className="cursor-pointer hover:bg-sage-100 transition-colors"
+                  onClick={() => setSelectedType(type)}
+                >
+                  {type} ({galleryItems?.filter(item => item.bouquetType === type).length || 0})
+                </Badge>
+              ))}
+            </div>
+            {(searchQuery || selectedType) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedType(null);
+                }}
+                className="ml-auto text-charcoal/60 hover:text-charcoal"
+              >
+                Réinitialiser
+              </Button>
+            )}
+          </div>
+          <div className="mt-4 text-sm text-charcoal/60">
+            {filteredItems.length} résultat{filteredItems.length > 1 ? 's' : ''} trouvé{filteredItems.length > 1 ? 's' : ''}
           </div>
         </div>
       </section>
@@ -40,9 +123,9 @@ export default function Gallery() {
       {/* Gallery Grid - Masonry Layout */}
       <section className="py-16">
         <div className="container">
-          {galleryItems && galleryItems.length > 0 ? (
+          {filteredItems && filteredItems.length > 0 ? (
             <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-              {galleryItems.map((item) => (
+              {filteredItems.map((item) => (
                 <Card
                   key={item.id}
                   className="break-inside-avoid cursor-pointer group overflow-hidden border-sage-200 hover:shadow-xl transition-all duration-300"

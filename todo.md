@@ -367,4 +367,51 @@
 - [ ] Tester les fonctionnalités CRUD
 - [ ] Vérifier les performances et le lazy loading
 - [ ] Créer le checkpoint final v11.0
-- [ ] Synchroniser avec GitHub
+- [x] Synchroniser avec GitHub
+
+## Phase 19 - Intégration des suggestions et préparation déploiement
+
+### 1. Boutons Wishlist dans le catalogue
+- [x] Créer un composant WishlistButton réutilisable
+- [ ] Intégrer le bouton dans les cartes du catalogue (/catalog)
+- [x] Ajouter le bouton dans la page de détail (/bouquet/:id) (/bouquet/:id)
+- [x] Implémenter les mutations tRPC (déjà fait en Phase 18)
+- [x] Ajouter les animations et feedback visuel
+- [x] Gérer l'état de connexion (redirection si non connecté)
+
+### 2. Filtres et recherche pour la galerie
+- [x] Ajouter une barre de recherche dans la galerie
+- [x] Implémenter les filtres par type (Mariage, Anniversaire, Moderne, etc.)
+- [x] Créer l'UI des filtres (badges cliquables)
+- [x] Logique de filtrage côté client (useMemo)
+- [x] Animation de transition entre les filtres
+- [x] Compteur de résultats
+
+### 3. Page FAQ interactive
+- [x] Créer la page /faq avec structure
+- [x] Implémenter le composant Accordion (shadcn/ui)
+- [x] Rédiger les questions/réponses (livraison, entretien, personnalisation, paiement, retours)
+- [x] Design cohérent avec le reste du site
+- [x] Ajouter des icônes pour chaque section
+- [x] SEO et métadonnées
+
+### 4. Configuration Vercel
+- [x] Créer vercel.json avec configuration optimale
+- [x] Documenter les variables d.environnement requises
+- [x] Configurer les redirections et rewrites
+- [x] Optimiser les paramètres de build
+- [ ] Préparer le fichier .env.example
+
+### 5. Documentation Supabase
+- [ ] Guide de création du projet Supabase
+- [ ] Script SQL de migration du schéma
+- [ ] Documentation des variables d'environnement
+- [ ] Guide de configuration Row Level Security (RLS)
+- [ ] Instructions de connexion à la base de données
+
+### 6. Tests et validation
+- [ ] Tester tous les nouveaux composants
+- [ ] Valider le build de production
+- [ ] Vérifier la compatibilité mobile
+- [ ] Tester les performances
+- [ ] Créer le checkpoint v12.0 (en cours)

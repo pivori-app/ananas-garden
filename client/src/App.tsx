@@ -32,6 +32,7 @@ import Referral from "./pages/Referral";
 import HowItWorks from "./pages/HowItWorks";
 import Gallery from "./pages/Gallery";
 import Wishlist from "./pages/Wishlist";
+import FAQ from "./pages/FAQ";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -66,6 +67,7 @@ function Router() {
         <Route path="/referral" component={Referral} />
         <Route path="/gallery" component={Gallery} />
         <Route path="/wishlist" component={Wishlist} />
+        <Route path="/faq" component={FAQ} />
         <Route path={"/404"} component={NotFound} />
         {/* Final fallback route */}
         <Route component={NotFound} />

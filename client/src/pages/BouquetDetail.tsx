@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, ShoppingCart, ArrowLeft, Sparkles, Heart, Star } from "lucide-react";
+import { Loader2, ShoppingCart, ArrowLeft, Sparkles, Star } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import BouquetVisualizer from "@/components/BouquetVisualizer";
+import { WishlistButton } from "@/components/WishlistButton";
 import { toast } from "sonner";
 
 export default function BouquetDetail() {
@@ -33,37 +34,7 @@ export default function BouquetDetail() {
     { enabled: bouquetId > 0 }
   );
 
-  const { data: favoriteCheck } = trpc.favorites.check.useQuery(
-    { bouquetId },
-    { enabled: isAuthenticated && bouquetId > 0 }
-  );
-  const isFavorite = favoriteCheck?.isFavorite || false;
-
-  const addFavoriteMutation = trpc.favorites.add.useMutation({
-    onSuccess: () => {
-      toast.success("Ajouté aux favoris !");
-      window.location.reload();
-    },
-  });
-
-  const removeFavoriteMutation = trpc.favorites.remove.useMutation({
-    onSuccess: () => {
-      toast.success("Retiré des favoris");
-      window.location.reload();
-    },
-  });
-
-  const toggleFavorite = () => {
-    if (!isAuthenticated) {
-      toast.error("Connectez-vous pour sauvegarder vos favoris");
-      return;
-    }
-    if (isFavorite) {
-      removeFavoriteMutation.mutate({ bouquetId });
-    } else {
-      addFavoriteMutation.mutate({ bouquetId });
-    }
-  };
+  // Wishlist functionality is now handled by WishlistButton component
 
   const addToCart = trpc.cart.add.useMutation({
     onSuccess: () => {
@@ -235,15 +206,12 @@ export default function BouquetDetail() {
                 </span>
               </div>
               <div className="flex gap-3">
-                <Button
-                  variant="outline"
+                <WishlistButton
+                  bouquetId={bouquetId}
+                  variant="default"
                   size="lg"
                   className="h-14"
-                  onClick={toggleFavorite}
-                  disabled={addFavoriteMutation.isPending || removeFavoriteMutation.isPending}
-                >
-                  <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current text-red-500' : ''}`} />
-                </Button>
+                />
                 <Button
                   size="lg"
                   className="flex-1 h-14 text-lg"
