@@ -8,7 +8,7 @@ import { Copy, Check, Share2, Gift, Users, TrendingUp, Loader2, Facebook, Twitte
 import { useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import Footer from "@/components/Footer";
+
 
 export default function Referral() {
   const { user, isAuthenticated, loading } = useAuth();
@@ -65,7 +65,6 @@ export default function Referral() {
         <main className="flex-1 flex items-center justify-center pt-24">
           <Loader2 className="w-8 h-8 animate-spin text-[#8B9D83]" />
         </main>
-        <Footer />
       </div>
     );
   }
@@ -90,7 +89,6 @@ export default function Referral() {
             </CardContent>
           </Card>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -346,8 +344,6 @@ export default function Referral() {
           )}
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

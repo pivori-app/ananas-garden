@@ -3,8 +3,7 @@ import { useRoute, Link } from "wouter";
 import { Calendar, Clock, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+
 import { Streamdown } from "streamdown";
 
 const categoryLabels: Record<string, string> = {
@@ -36,11 +35,9 @@ export default function BlogPost() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#FAF9F6] to-white">
-        <Header />
         <main className="flex-1 flex items-center justify-center pt-24">
           <Loader2 className="w-8 h-8 animate-spin text-[#8B9D83]" />
         </main>
-        <Footer />
       </div>
     );
   }
@@ -48,7 +45,6 @@ export default function BlogPost() {
   if (!post) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#FAF9F6] to-white">
-        <Header />
         <main className="flex-1 flex items-center justify-center pt-24">
           <div className="text-center">
             <h1 className="font-playfair text-4xl font-bold text-gray-900 mb-4">
@@ -65,15 +61,12 @@ export default function BlogPost() {
             </Link>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#FAF9F6] to-white">
-      <Header />
-      
       <main className="flex-1 pt-24 pb-16">
         <article className="container max-w-4xl">
           {/* Back Button */}
@@ -179,8 +172,6 @@ export default function BlogPost() {
           )}
         </article>
       </main>
-
-      <Footer />
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { Calendar, Clock, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Footer from "@/components/Footer";
+
 
 const categoryLabels: Record<string, string> = {
   "langage-des-fleurs": "Langage des fleurs",
@@ -118,8 +118,6 @@ export default function Blog() {
           )}
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

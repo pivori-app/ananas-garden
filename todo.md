@@ -314,3 +314,11 @@
   - [x] Mettre à jour APP_LOGO dans const.ts
   - [x] Vérifier l'affichage dans le header
 - [x] Tester et créer le checkpoint final v10.1
+
+## Phase 17 - Correction des doublons de pied de page
+- [x] Analyser la page Blog pour identifier les doublons de footer
+- [x] Vérifier App.tsx pour le footer global
+- [x] Supprimer les footers dupliqués dans Blog.tsx (1 footer)
+- [x] Vérifier les autres pages : BlogPost (3 footers), Referral (3 footers)
+- [x] Tester toutes les pages corrigées (Blog et Referral testées avec succès)
+- [x] Créer le checkpoint final v10.2
