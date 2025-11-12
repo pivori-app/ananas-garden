@@ -16,6 +16,8 @@ export default function Scanner() {
   const [cameraActive, setCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [permissionDenied, setPermissionDenied] = useState(false);
   
   // Résultats pour analyse de bouquet
   const [bouquetResult, setBouquetResult] = useState<{
@@ -110,6 +112,18 @@ export default function Scanner() {
   };
 
   const startCamera = async () => {
+    // Réinitialiser les erreurs
+    setCameraError(null);
+    setPermissionDenied(false);
+
+    // Vérifier si l'API MediaDevices est disponible
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      const errorMsg = "Votre navigateur ne supporte pas l'accès à la caméra. Veuillez utiliser un navigateur récent (Chrome, Firefox, Safari).";
+      setCameraError(errorMsg);
+      toast.error(errorMsg);
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } }
@@ -121,10 +135,42 @@ export default function Scanner() {
         setCapturedImage(null);
         setBouquetResult(null);
         setFlowerResult(null);
+        setCameraError(null);
+        setPermissionDenied(false);
       }
-    } catch (error) {
-      toast.error("Impossible d'accéder à la caméra. Veuillez autoriser l'accès.");
+    } catch (error: any) {
       console.error("Camera error:", error);
+      
+      // Gestion détaillée des erreurs
+      if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
+        const errorMsg = "Accès à la caméra refusé. Veuillez autoriser l'accès dans les paramètres de votre navigateur.";
+        setCameraError(errorMsg);
+        setPermissionDenied(true);
+        toast.error(errorMsg, {
+          duration: 5000,
+          description: "Sur mobile : Paramètres > Safari/Chrome > Autorisations > Caméra"
+        });
+      } else if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
+        const errorMsg = "Aucune caméra détectée sur cet appareil.";
+        setCameraError(errorMsg);
+        toast.error(errorMsg);
+      } else if (error.name === "NotReadableError" || error.name === "TrackStartError") {
+        const errorMsg = "La caméra est déjà utilisée par une autre application. Veuillez la fermer et réessayer.";
+        setCameraError(errorMsg);
+        toast.error(errorMsg);
+      } else if (error.name === "OverconstrainedError") {
+        const errorMsg = "Les paramètres de la caméra ne sont pas supportés. Essayez avec une autre caméra.";
+        setCameraError(errorMsg);
+        toast.error(errorMsg);
+      } else if (error.name === "SecurityError") {
+        const errorMsg = "Accès à la caméra bloqué pour des raisons de sécurité. Vérifiez que vous utilisez HTTPS.";
+        setCameraError(errorMsg);
+        toast.error(errorMsg);
+      } else {
+        const errorMsg = "Impossible d'accéder à la caméra. Veuillez réessayer.";
+        setCameraError(errorMsg);
+        toast.error(errorMsg + " (" + error.message + ")");
+      }
     }
   };
 
@@ -228,9 +274,34 @@ export default function Scanner() {
               </TabsList>
             </Tabs>
 
+            {/* Message d'erreur caméra */}
+            {cameraError && (
+              <Card className="border-destructive bg-destructive/10">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <XCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="font-medium text-destructive mb-1">Erreur d'accès à la caméra</p>
+                      <p className="text-sm text-destructive/90">{cameraError}</p>
+                      {permissionDenied && (
+                        <div className="mt-3 text-xs text-muted-foreground space-y-1">
+                          <p className="font-medium">Comment autoriser l'accès à la caméra :</p>
+                          <ul className="list-disc list-inside space-y-0.5 ml-2">
+                            <li><strong>Sur iPhone/iPad :</strong> Réglages → Safari → Caméra → Autoriser</li>
+                            <li><strong>Sur Android :</strong> Paramètres → Applications → Chrome/Firefox → Autorisations → Caméra</li>
+                            <li><strong>Sur ordinateur :</strong> Cliquez sur l'icône de cadenas dans la barre d'adresse → Autorisations → Caméra → Autoriser</li>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Camera/Image Display */}
             <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
-              {!capturedImage && !cameraActive && (
+              {!capturedImage && !cameraActive && !cameraError && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
                   {mode === "flower" ? (
                     <>
@@ -272,7 +343,7 @@ export default function Scanner() {
                 <>
                   <Button onClick={startCamera} size="lg" className="gap-2">
                     <Camera className="h-5 w-5" />
-                    Ouvrir la caméra
+                    {cameraError ? "Réessayer" : "Ouvrir la caméra"}
                   </Button>
                   
                   <Button
