@@ -649,4 +649,16 @@
 - [x] Afficher les anniversaires à venir avec badges colorés
 - [x] Ajouter les actions rapides (modifier, supprimer, commander)
 - [x] Tester l'intégration complète
-- [ ] Créer le checkpoint v15.3
+- [x] Créer le checkpoint v15.3
+
+## Phase 26 - Amélioration page Anniversaires + Notifications + Commande rapide
+- [x] Analyser la page /birthdays actuelle
+- [x] Vérifier la présence et visibilité du bouton "Ajouter un contact"
+- [x] Améliorer l'interface si nécessaire (bouton + visible, alertes, badges)
+- [x] Créer le système de notifications automatiques (backend)
+- [x] Ajouter job CRON pour vérifier quotidiennement les anniversaires à venir
+- [x] Envoyer notifications 7 jours, 3 jours et 1 jour avant chaque anniversaire
+- [x] Ajouter bouton "Commander rapidement" dans la liste des contacts
+- [x] Créer le flux de commande rapide en un clic
+- [x] Tester l'intégration complète (ajout contact, notifications, commande rapide)
+- [ ] Créer le checkpoint v15.4

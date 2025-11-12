@@ -344,7 +344,22 @@ export default function Birthdays() {
                             {contact.firstName} {contact.lastName}
                           </h3>
                           {isUpcoming && (
-                            <Badge variant={daysUntil <= 7 ? "destructive" : "secondary"}>
+                            <Badge 
+                              variant={
+                                daysUntil <= 7 
+                                  ? "destructive" 
+                                  : daysUntil <= 14 
+                                  ? "default" 
+                                  : "secondary"
+                              }
+                              className={
+                                daysUntil <= 7 
+                                  ? "" 
+                                  : daysUntil <= 14 
+                                  ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200" 
+                                  : "bg-green-100 text-green-800 hover:bg-green-200"
+                              }
+                            >
                               Dans {daysUntil} jour{daysUntil > 1 ? "s" : ""}
                             </Badge>
                           )}
@@ -387,22 +402,38 @@ export default function Birthdays() {
                         )}
                       </div>
 
-                      <div className="flex gap-2 ml-4">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEdit(contact)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(contact.id)}
-                          disabled={deleteMutation.isPending}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                      <div className="flex flex-col gap-2 ml-4">
+                        {isUpcoming && (
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="bg-sage hover:bg-sage/90 whitespace-nowrap"
+                            onClick={() => {
+                              // Rediriger vers la page de création avec pré-remplissage
+                              window.location.href = `/create?recipient=${encodeURIComponent(contact.firstName + ' ' + contact.lastName)}&occasion=anniversaire`;
+                            }}
+                          >
+                            <Gift className="h-4 w-4 mr-1" />
+                            Commander
+                          </Button>
+                        )}
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEdit(contact)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDelete(contact.id)}
+                            disabled={deleteMutation.isPending}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
