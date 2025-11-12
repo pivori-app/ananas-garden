@@ -7,6 +7,7 @@ import { Camera, Upload, Loader2, Sparkles, Flower2, CheckCircle2, XCircle } fro
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import SocialShareButtons from "@/components/SocialShareButtons";
 
 export default function Scanner() {
   const [, setLocation] = useLocation();
@@ -439,6 +440,15 @@ export default function Scanner() {
                     </div>
                   </div>
                 )}
+
+                {/* Social Share Buttons */}
+                <div className="pt-4 border-t">
+                  <h4 className="text-sm font-medium mb-3">Partager cette découverte</h4>
+                  <SocialShareButtons
+                    title={`J'ai identifié ${flowerResult.name} avec Ananas Garden !`}
+                    text={`Découvrez ${flowerResult.name} - ${flowerResult.description.substring(0, 100)}...`}
+                  />
+                </div>
               </div>
             )}
 

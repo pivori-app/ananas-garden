@@ -350,3 +350,44 @@ export const scanHistory = mysqlTable("scan_history", {
 
 export type ScanHistoryItem = typeof scanHistory.$inferSelect;
 export type InsertScanHistoryItem = typeof scanHistory.$inferInsert;
+
+/**
+ * Table des contacts pour les anniversaires
+ * Stocke les informations des personnes dont on veut se rappeler l'anniversaire
+ */
+export const birthdayContacts = mysqlTable("birthday_contacts", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").references(() => users.id).notNull(),
+  firstName: varchar("firstName", { length: 100 }).notNull(),
+  lastName: varchar("lastName", { length: 100 }).notNull(),
+  birthDate: timestamp("birthDate").notNull(), // Date d'anniversaire (année peut être fictive si inconnue)
+  address: text("address"), // Adresse de livraison
+  phone: varchar("phone", { length: 20 }),
+  email: varchar("email", { length: 320 }),
+  preferences: text("preferences"), // JSON: { flowerTypes: [], colors: [], budget: number }
+  googleCalendarEventId: varchar("googleCalendarEventId", { length: 255 }), // ID de l'événement Google Calendar
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type BirthdayContact = typeof birthdayContacts.$inferSelect;
+export type InsertBirthdayContact = typeof birthdayContacts.$inferInsert;
+
+/**
+ * Table des commandes d'anniversaire
+ * Historique des bouquets envoyés pour chaque contact
+ */
+export const birthdayOrders = mysqlTable("birthday_orders", {
+  id: int("id").autoincrement().primaryKey(),
+  contactId: int("contactId").references(() => birthdayContacts.id).notNull(),
+  userId: int("userId").references(() => users.id).notNull(),
+  bouquetId: int("bouquetId").references(() => bouquets.id),
+  orderDate: timestamp("orderDate").defaultNow().notNull(),
+  deliveryDate: timestamp("deliveryDate").notNull(),
+  status: mysqlEnum("status", ["pending", "confirmed", "delivered", "cancelled"]).default("pending").notNull(),
+  notes: text("notes"), // Notes personnelles pour cette commande
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type BirthdayOrder = typeof birthdayOrders.$inferSelect;
+export type InsertBirthdayOrder = typeof birthdayOrders.$inferInsert;
