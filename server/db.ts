@@ -192,10 +192,18 @@ export async function updateFlowerStock(flowerId: number, quantity: number) {
  */
 export async function createBouquet(bouquet: InsertBouquet) {
   const db = await getDb();
-  if (!db) return undefined;
+  if (!db) {
+    throw new Error("Database not available");
+  }
   
   const result = await db.insert(bouquets).values(bouquet);
-  return Number(result[0].insertId);
+  const insertId = result[0]?.insertId;
+  
+  if (!insertId) {
+    throw new Error("Failed to create bouquet - no insert ID returned");
+  }
+  
+  return Number(insertId);
 }
 
 export async function getBouquetById(id: number) {

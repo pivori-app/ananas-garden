@@ -624,3 +624,13 @@
 - [ ] Build de production sans erreur
 - [ ] Synchroniser avec GitHub
 - [ ] Créer le checkpoint v15.0
+
+## Phase 23 - Correction bug "Générer mon bouquet"
+
+### Bug identifié
+- [ ] Analyser CreateBouquet.tsx pour trouver l'erreur "Cannot read properties of undefined (reading 'id')"
+- [ ] Identifier la ligne qui cause l'erreur
+- [ ] Corriger le bug (vérification de l'existence de l'objet avant d'accéder à .id)
+- [ ] Tester le bouton "Générer mon bouquet"
+- [ ] Vérifier que la génération fonctionne correctement
+- [ ] Créer le checkpoint v15.1
