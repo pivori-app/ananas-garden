@@ -302,4 +302,15 @@
   - [x] Section "Pourquoi choisir Ananas Garden" avec 4 features
   - [x] Lazy loading actif sur toutes les images
   - [x] PayPal intégré dans le backend (procédures tRPC créées)
-- [ ] Créer le checkpoint final v10.0
+- [x] Créer le checkpoint final v10.0 (3c534408)
+
+## Phase 16 - Création et intégration du nouveau logo
+- [x] Créer un logo professionnel avec IA
+  - [x] Design moderne représentant ananas + fleurs + émotions
+  - [x] Style élégant et contemporain
+  - [x] Format PNG avec fond transparent
+- [x] Intégrer le nouveau logo dans le projet
+  - [x] Remplacer le logo actuel dans client/public/
+  - [x] Mettre à jour APP_LOGO dans const.ts
+  - [x] Vérifier l'affichage dans le header
+- [x] Tester et créer le checkpoint final v10.1
