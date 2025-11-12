@@ -71,6 +71,13 @@
       "when": 1762938400178,
       "tag": "0009_thin_ken_ellis",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1762944184288,
+      "tag": "0010_regular_shaman",
+      "breakpoints": true
     }
   ]
 }

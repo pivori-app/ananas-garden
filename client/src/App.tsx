@@ -30,6 +30,8 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Referral from "./pages/Referral";
 import HowItWorks from "./pages/HowItWorks";
+import Gallery from "./pages/Gallery";
+import Wishlist from "./pages/Wishlist";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -62,6 +64,8 @@ function Router() {
         <Route path="/blog/:slug" component={BlogPost} />
         <Route path="/how-it-works" component={HowItWorks} />
         <Route path="/referral" component={Referral} />
+        <Route path="/gallery" component={Gallery} />
+        <Route path="/wishlist" component={Wishlist} />
         <Route path={"/404"} component={NotFound} />
         {/* Final fallback route */}
         <Route component={NotFound} />

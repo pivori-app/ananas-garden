@@ -279,3 +279,39 @@ export const blogPosts = mysqlTable("blogPosts", {
 
 export type BlogPost = typeof blogPosts.$inferSelect;
 export type InsertBlogPost = typeof blogPosts.$inferInsert;
+
+/**
+ * Table de la galerie de réalisations
+ */
+export const gallery = mysqlTable("gallery", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  imageUrl: text("imageUrl").notNull(),
+  bouquetType: varchar("bouquetType", { length: 100 }), // Type de bouquet (mariage, anniversaire, etc.)
+  tags: text("tags"), // JSON array pour filtrage
+  isVisible: int("isVisible").default(1).notNull(), // 0 = caché, 1 = visible
+  displayOrder: int("displayOrder").default(0).notNull(), // Pour l'ordre d'affichage
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type GalleryItem = typeof gallery.$inferSelect;
+export type InsertGalleryItem = typeof gallery.$inferInsert;
+
+/**
+ * Table de la wishlist (liste de souhaits)
+ * Remplace la table favorites existante avec plus de fonctionnalités
+ */
+export const wishlists = mysqlTable("wishlists", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").references(() => users.id).notNull(),
+  bouquetId: int("bouquetId").references(() => bouquets.id).notNull(),
+  notes: text("notes"), // Notes personnelles de l'utilisateur
+  notifyOnPromotion: int("notifyOnPromotion").default(1).notNull(), // 0 = non, 1 = oui
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type WishlistItem = typeof wishlists.$inferSelect;
+export type InsertWishlistItem = typeof wishlists.$inferInsert;

@@ -602,6 +602,66 @@ export const appRouter = router({
         return await getPayPalOrderDetails(input.paypalOrderId);
       }),
   }),
+
+  gallery: router({
+    list: publicProcedure.query(async () => {
+      const { getAllGalleryItems } = await import("./db");
+      return await getAllGalleryItems();
+    }),
+    getById: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const { getGalleryItemById } = await import("./db");
+        return await getGalleryItemById(input.id);
+      }),
+  }),
+
+  wishlist: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const { getUserWishlist } = await import("./db");
+      return await getUserWishlist(ctx.user.id);
+    }),
+    add: protectedProcedure
+      .input(z.object({ 
+        bouquetId: z.number(),
+        notes: z.string().optional(),
+        notifyOnPromotion: z.number().default(1)
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { addToWishlist } = await import("./db");
+        const wishlistId = await addToWishlist({
+          userId: ctx.user.id,
+          bouquetId: input.bouquetId,
+          notes: input.notes || null,
+          notifyOnPromotion: input.notifyOnPromotion,
+        });
+        return { success: !!wishlistId, wishlistId };
+      }),
+    remove: protectedProcedure
+      .input(z.object({ bouquetId: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        const { removeFromWishlist } = await import("./db");
+        const success = await removeFromWishlist(ctx.user.id, input.bouquetId);
+        return { success };
+      }),
+    check: protectedProcedure
+      .input(z.object({ bouquetId: z.number() }))
+      .query(async ({ input, ctx }) => {
+        const { isInWishlist } = await import("./db");
+        const inWishlist = await isInWishlist(ctx.user.id, input.bouquetId);
+        return { inWishlist };
+      }),
+    updateNotes: protectedProcedure
+      .input(z.object({ 
+        bouquetId: z.number(),
+        notes: z.string()
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { updateWishlistNotes } = await import("./db");
+        const success = await updateWishlistNotes(ctx.user.id, input.bouquetId, input.notes);
+        return { success };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

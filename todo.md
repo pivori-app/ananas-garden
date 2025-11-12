@@ -322,3 +322,49 @@
 - [x] Vérifier les autres pages : BlogPost (3 footers), Referral (3 footers)
 - [x] Tester toutes les pages corrigées (Blog et Referral testées avec succès)
 - [x] Créer le checkpoint final v10.2
+
+## Phase 18 - Intégration complète : Favicon, Galerie, Wishlist et Supabase
+
+### 1. Base de données (Option C - Conserver TiDB/MySQL actuel)
+- [x] Décision: Utiliser la base de données actuelle (plus simple et rapide)
+- [x] Créer les nouvelles tables (gallery, wishlists)
+- [x] Tester les migrations avec pnpm db:push
+
+### 2. Favicon personnalisé
+- [ ] Documenter la procédure de mise à jour du favicon
+- [ ] Créer un guide utilisateur pour l'interface de gestion
+
+### 3. Page Galerie de réalisations
+- [ ] Créer le schéma de table `gallery` dans Supabase
+- [ ] Développer les procédures tRPC pour la galerie
+- [ ] Créer la page `/gallery` avec grille masonry
+- [ ] Intégrer le lightbox pour affichage plein écran
+- [ ] Ajouter lazy loading sur les images
+- [ ] Créer une interface admin pour gérer la galerie
+- [x] Générer des images de bouquets avec IA pour la galerie (5 images professionnelles)
+- [ ] Ajouter la route dans App.tsx et le lien dans le footer
+
+### 4. Système Wishlist persistante
+- [ ] Créer le schéma de table `wishlists` dans Supabase
+- [ ] Développer les procédures tRPC (add, remove, list)
+- [ ] Créer la page `/wishlist` avec liste des favoris
+- [ ] Ajouter le bouton "Ajouter aux favoris" sur les bouquets
+- [ ] Implémenter les notifications de promotion (optionnel)
+- [ ] Ajouter la route dans App.tsx et le lien dans la navigation
+
+### 5. Optimisations build et déploiement
+- [ ] Vérifier TypeScript (pnpm tsc --noEmit)
+- [x] Tester le build de production (✅ SUCCÈS) (pnpm build)
+- [ ] Corriger toutes les erreurs de build
+- [ ] Vérifier les imports et dépendances manquantes
+- [ ] Optimiser les images (compression, formats)
+- [ ] Vérifier la configuration Vite et ESLint
+- [ ] Tester le serveur en mode production
+
+### 6. Tests et validation
+- [ ] Tester toutes les nouvelles pages (Galerie, Wishlist)
+- [ ] Vérifier la connexion Supabase en production
+- [ ] Tester les fonctionnalités CRUD
+- [ ] Vérifier les performances et le lazy loading
+- [ ] Créer le checkpoint final v11.0
+- [ ] Synchroniser avec GitHub

@@ -15,12 +15,16 @@ import {
   testimonials,
   blogPosts,
   referrals,
+  gallery,
+  wishlists,
   InsertBouquet,
   InsertCartItem,
   InsertOrder,
   InsertOrderItem,
   InsertFavorite,
-  InsertTestimonial
+  InsertTestimonial,
+  InsertGalleryItem,
+  InsertWishlistItem
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -817,5 +821,144 @@ export async function updateOrderPaymentStatus(
   } catch (error) {
     console.error("[Database] Failed to update order payment status:", error);
     throw error;
+  }
+}
+
+// ============================================
+// Gallery Functions
+// ============================================
+
+export async function getAllGalleryItems() {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(gallery)
+    .where(eq(gallery.isVisible, 1))
+    .orderBy(gallery.displayOrder, gallery.createdAt);
+}
+
+export async function getGalleryItemById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const results = await db
+    .select()
+    .from(gallery)
+    .where(eq(gallery.id, id))
+    .limit(1);
+
+  return results.length > 0 ? results[0] : null;
+}
+
+export async function createGalleryItem(item: InsertGalleryItem): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.insert(gallery).values(item);
+  return Number(result[0].insertId);
+}
+
+// ============================================
+// Wishlist Functions
+// ============================================
+
+export async function getUserWishlist(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select({
+      id: wishlists.id,
+      bouquetId: wishlists.bouquetId,
+      notes: wishlists.notes,
+      notifyOnPromotion: wishlists.notifyOnPromotion,
+      createdAt: wishlists.createdAt,
+      bouquet: bouquets,
+    })
+    .from(wishlists)
+    .leftJoin(bouquets, eq(wishlists.bouquetId, bouquets.id))
+    .where(eq(wishlists.userId, userId))
+    .orderBy(desc(wishlists.createdAt));
+}
+
+export async function addToWishlist(item: InsertWishlistItem): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+
+  try {
+    // Vérifier si l'item existe déjà
+    const existing = await db
+      .select()
+      .from(wishlists)
+      .where(and(
+        eq(wishlists.userId, item.userId),
+        eq(wishlists.bouquetId, item.bouquetId)
+      ))
+      .limit(1);
+
+    if (existing.length > 0) {
+      return existing[0].id; // Déjà dans la wishlist
+    }
+
+    const result = await db.insert(wishlists).values(item);
+    return Number(result[0].insertId);
+  } catch (error) {
+    console.error("[Wishlist] Error adding item:", error);
+    return null;
+  }
+}
+
+export async function removeFromWishlist(userId: number, bouquetId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    await db
+      .delete(wishlists)
+      .where(and(
+        eq(wishlists.userId, userId),
+        eq(wishlists.bouquetId, bouquetId)
+      ));
+    return true;
+  } catch (error) {
+    console.error("[Wishlist] Error removing item:", error);
+    return false;
+  }
+}
+
+export async function isInWishlist(userId: number, bouquetId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  const results = await db
+    .select()
+    .from(wishlists)
+    .where(and(
+      eq(wishlists.userId, userId),
+      eq(wishlists.bouquetId, bouquetId)
+    ))
+    .limit(1);
+
+  return results.length > 0;
+}
+
+export async function updateWishlistNotes(userId: number, bouquetId: number, notes: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    await db
+      .update(wishlists)
+      .set({ notes, updatedAt: new Date() })
+      .where(and(
+        eq(wishlists.userId, userId),
+        eq(wishlists.bouquetId, bouquetId)
+      ));
+    return true;
+  } catch (error) {
+    console.error("[Wishlist] Error updating notes:", error);
+    return false;
   }
 }
