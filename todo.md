@@ -752,4 +752,10 @@
 - [x] Implémenter le recadrage d'image avant analyse avec react-easy-crop (crop/zoom)
 - [x] Ajouter le contrôle de zoom (slider 1x-3x)
 - [x] Tester l'analyse d'images via l'API backend - API OpenAI GPT-4o-mini Vision confirmée
-- [ ] Créer un checkpoint avec toutes les améliorations
+- [x] Créer un checkpoint avec toutes les améliorations (v15.8)
+
+## Vérification boutons page d'accueil
+- [x] Vérifier le code de Home.tsx pour les boutons "Explorer les fleurs" et "Scanner un bouquet"
+- [x] Tester les boutons sur le serveur local - Fonctionnels avec window.location.href
+- [x] Corriger les liens - Remplacé Link par window.location.href pour navigation directe
+- [ ] Créer un checkpoint avec les corrections

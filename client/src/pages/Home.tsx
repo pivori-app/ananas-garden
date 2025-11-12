@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Sparkles, Heart, MessageCircle, Flower2, Camera } from "lucide-react";
-import { Link } from "wouter";
 
 export default function Home() {
+  
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -29,26 +29,20 @@ export default function Home() {
             </p>
             
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Link href="/create">
-                <Button size="lg" className="h-14 px-8 text-lg">
-                  <MessageCircle className="mr-2 h-5 w-5" />
-                  Créer mon bouquet
-                </Button>
-              </Link>
+              <Button size="lg" className="gap-2" onClick={() => window.location.href = "/create"}>
+                <Sparkles className="h-5 w-5" />
+                Créer mon bouquet
+              </Button>
               
-              <Link href="/catalog">
-                <Button variant="outline" size="lg" className="gap-2">
-                  <Flower2 className="h-5 w-5" />
-                  Explorer les fleurs
-                </Button>
-              </Link>
+              <Button variant="outline" size="lg" className="gap-2" onClick={() => window.location.href = "/catalog"}>
+                <Flower2 className="h-5 w-5" />
+                Explorer les fleurs
+              </Button>
               
-              <Link href="/scanner">
-                <Button variant="outline" size="lg" className="gap-2">
-                  <Camera className="h-5 w-5" />
-                  Scanner un bouquet
-                </Button>
-              </Link>
+              <Button variant="outline" size="lg" className="gap-2" onClick={() => window.location.href = "/scanner"}>
+                <Camera className="h-5 w-5" />
+                Scanner un bouquet
+              </Button>
             </div>
           </div>
         </div>
@@ -181,12 +175,10 @@ export default function Home() {
             <p className="mb-8 text-lg text-muted-foreground">
               Créez votre premier bouquet personnalisé en quelques minutes
             </p>
-            <Link href="/create">
-              <Button size="lg" className="h-14 px-8 text-lg">
-                <Sparkles className="mr-2 h-5 w-5" />
-                Commencer maintenant
-              </Button>
-            </Link>
+            <Button size="lg" className="gap-2" onClick={() => window.location.href = "/create"}>
+              <Sparkles className="h-5 w-5" />
+              Commencer maintenant
+            </Button>
           </Card>
         </div>
       </section>
