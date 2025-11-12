@@ -765,6 +765,81 @@ export const appRouter = router({
         return { success };
       }),
   }),
+  birthdays: router({
+    create: protectedProcedure
+      .input(z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        birthDate: z.date(),
+        address: z.string().optional(),
+        phone: z.string().optional(),
+        email: z.string().optional(),
+        preferences: z.string().optional(),
+        googleCalendarEventId: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { createBirthdayContact } = await import("./db");
+        const contactId = await createBirthdayContact(ctx.user.id, input);
+        return { success: !!contactId, contactId };
+      }),
+    list: protectedProcedure
+      .query(async ({ ctx }) => {
+        const { getUserBirthdayContacts } = await import("./db");
+        return await getUserBirthdayContacts(ctx.user.id);
+      }),
+    upcoming: protectedProcedure
+      .input(z.object({ daysAhead: z.number().optional().default(30) }))
+      .query(async ({ input, ctx }) => {
+        const { getUpcomingBirthdays } = await import("./db");
+        return await getUpcomingBirthdays(ctx.user.id, input.daysAhead);
+      }),
+    update: protectedProcedure
+      .input(z.object({
+        contactId: z.number(),
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+        birthDate: z.date().optional(),
+        address: z.string().optional(),
+        phone: z.string().optional(),
+        email: z.string().optional(),
+        preferences: z.string().optional(),
+        googleCalendarEventId: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { contactId, ...updates } = input;
+        const { updateBirthdayContact } = await import("./db");
+        const success = await updateBirthdayContact(contactId, ctx.user.id, updates);
+        return { success };
+      }),
+    delete: protectedProcedure
+      .input(z.object({ contactId: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        const { deleteBirthdayContact } = await import("./db");
+        const success = await deleteBirthdayContact(input.contactId, ctx.user.id);
+        return { success };
+      }),
+    orders: router({
+      create: protectedProcedure
+        .input(z.object({
+          contactId: z.number(),
+          bouquetId: z.number().optional(),
+          deliveryDate: z.date(),
+          status: z.enum(["pending", "confirmed", "delivered", "cancelled"]).optional(),
+          notes: z.string().optional(),
+        }))
+        .mutation(async ({ input, ctx }) => {
+          const { createBirthdayOrder } = await import("./db");
+          const orderId = await createBirthdayOrder({ userId: ctx.user.id, ...input });
+          return { success: !!orderId, orderId };
+        }),
+      list: protectedProcedure
+        .input(z.object({ contactId: z.number() }))
+        .query(async ({ input }) => {
+          const { getContactBirthdayOrders } = await import("./db");
+          return await getContactBirthdayOrders(input.contactId);
+        }),
+    }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

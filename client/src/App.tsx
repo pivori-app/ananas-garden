@@ -34,6 +34,7 @@ import Gallery from "./pages/Gallery";
 import Wishlist from "./pages/Wishlist";
 import FAQ from "./pages/FAQ";
 import History from "./pages/History";
+import Birthdays from "./pages/Birthdays";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -47,6 +48,7 @@ function Router() {
         <Route path="/catalog" component={Catalog} />
         <Route path="/scanner" component={Scanner} />
         <Route path="/history" component={History} />
+        <Route path="/birthdays" component={Birthdays} />
         <Route path="/favorites" component={Favorites} />
         <Route path="/loyalty-points" component={LoyaltyPoints} />
         <Route path="/subscriptions" component={Subscriptions} />

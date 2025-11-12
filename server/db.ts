@@ -26,7 +26,11 @@ import {
   InsertTestimonial,
   InsertGalleryItem,
   InsertWishlistItem,
-  InsertBouquetRating
+  InsertBouquetRating,
+  birthdayContacts,
+  birthdayOrders,
+  InsertBirthdayContact,
+  InsertBirthdayOrder
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -1158,4 +1162,134 @@ export async function deleteScanFromHistory(scanId: number, userId: number): Pro
     console.error("[ScanHistory] Error deleting scan:", error);
     return false;
   }
+}
+
+// ==================== Birthday Contacts ====================
+
+export async function createBirthdayContact(userId: number, contactData: {
+  firstName: string;
+  lastName: string;
+  birthDate: Date;
+  address?: string;
+  phone?: string;
+  email?: string;
+  preferences?: string;
+  googleCalendarEventId?: string;
+}) {
+  const db = await getDb();
+  if (!db) return null;
+
+  try {
+    const result = await db.insert(birthdayContacts).values({
+      userId,
+      ...contactData,
+    });
+    return Number(result[0].insertId);
+  } catch (error) {
+    console.error("[BirthdayContacts] Error creating contact:", error);
+    return null;
+  }
+}
+
+export async function getUserBirthdayContacts(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db
+    .select()
+    .from(birthdayContacts)
+    .where(eq(birthdayContacts.userId, userId))
+    .orderBy(birthdayContacts.birthDate);
+}
+
+export async function updateBirthdayContact(contactId: number, userId: number, updates: Partial<InsertBirthdayContact>) {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    await db
+      .update(birthdayContacts)
+      .set(updates)
+      .where(and(
+        eq(birthdayContacts.id, contactId),
+        eq(birthdayContacts.userId, userId)
+      ));
+    return true;
+  } catch (error) {
+    console.error("[BirthdayContacts] Error updating contact:", error);
+    return false;
+  }
+}
+
+export async function deleteBirthdayContact(contactId: number, userId: number) {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    await db
+      .delete(birthdayContacts)
+      .where(and(
+        eq(birthdayContacts.id, contactId),
+        eq(birthdayContacts.userId, userId)
+      ));
+    return true;
+  } catch (error) {
+    console.error("[BirthdayContacts] Error deleting contact:", error);
+    return false;
+  }
+}
+
+export async function getUpcomingBirthdays(userId: number, daysAhead: number = 30) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const contacts = await getUserBirthdayContacts(userId);
+  const today = new Date();
+  const upcoming = contacts.filter((contact) => {
+    const birthDate = new Date(contact.birthDate);
+    const thisYearBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+    
+    // Si l'anniversaire est déjà passé cette année, prendre l'année prochaine
+    if (thisYearBirthday < today) {
+      thisYearBirthday.setFullYear(today.getFullYear() + 1);
+    }
+    
+    const daysUntil = Math.floor((thisYearBirthday.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    return daysUntil >= 0 && daysUntil <= daysAhead;
+  });
+
+  return upcoming;
+}
+
+// ==================== Birthday Orders ====================
+
+export async function createBirthdayOrder(orderData: {
+  contactId: number;
+  userId: number;
+  bouquetId?: number;
+  deliveryDate: Date;
+  status?: "pending" | "confirmed" | "delivered" | "cancelled";
+  notes?: string;
+}) {
+  const db = await getDb();
+  if (!db) return null;
+
+  try {
+    const result = await db.insert(birthdayOrders).values(orderData);
+    return Number(result[0].insertId);
+  } catch (error) {
+    console.error("[BirthdayOrders] Error creating order:", error);
+    return null;
+  }
+}
+
+export async function getContactBirthdayOrders(contactId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db
+    .select()
+    .from(birthdayOrders)
+    .where(eq(birthdayOrders.contactId, contactId))
+    .orderBy(desc(birthdayOrders.orderDate));
 }
