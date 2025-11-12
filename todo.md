@@ -741,4 +741,15 @@
 - [x] Ajouter un bouton "Réessayer" après erreur
 - [x] Ajouter des instructions détaillées pour autoriser la caméra (iOS, Android, Desktop)
 - [x] Tester sur le serveur local (desktop et mobile si possible) - HMR confirmé, 0 erreur TypeScript
-- [ ] Créer un checkpoint avec les corrections
+- [x] Créer un checkpoint avec les corrections (v15.7)
+
+## Améliorations Scanner - Sélection caméra et upload avec recadrage
+- [x] Analyser le code backend pour vérifier les procédures tRPC d'analyse d'images
+- [x] Implémenter l'énumération des caméras disponibles (navigator.mediaDevices.enumerateDevices)
+- [x] Créer un sélecteur de caméra dans l'interface (dropdown)
+- [x] Ajouter le bouton de switch caméra "Changer" pendant la capture
+- [x] Améliorer le mode upload avec prévisualisation de l'image via modal
+- [x] Implémenter le recadrage d'image avant analyse avec react-easy-crop (crop/zoom)
+- [x] Ajouter le contrôle de zoom (slider 1x-3x)
+- [x] Tester l'analyse d'images via l'API backend - API OpenAI GPT-4o-mini Vision confirmée
+- [ ] Créer un checkpoint avec toutes les améliorations

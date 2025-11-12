@@ -1,13 +1,16 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Camera, Upload, Loader2, Sparkles, Flower2, CheckCircle2, XCircle } from "lucide-react";
+import { Camera, Upload, Loader2, Sparkles, Flower2, CheckCircle2, XCircle, SwitchCamera } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import SocialShareButtons from "@/components/SocialShareButtons";
+import Cropper from "react-easy-crop";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Slider } from "@/components/ui/slider";
 
 export default function Scanner() {
   const [, setLocation] = useLocation();
@@ -18,6 +21,16 @@ export default function Scanner() {
   const [analyzing, setAnalyzing] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
+  const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([]);
+  const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
+  const [facingMode, setFacingMode] = useState<"user" | "environment">("environment");
+  
+  // États pour le recadrage d'image
+  const [showCropper, setShowCropper] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   
   // Résultats pour analyse de bouquet
   const [bouquetResult, setBouquetResult] = useState<{
@@ -111,7 +124,28 @@ export default function Scanner() {
     }
   };
 
-  const startCamera = async () => {
+  // Énumérer les caméras disponibles
+  const enumerateCameras = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(device => device.kind === 'videoinput');
+      setAvailableCameras(videoDevices);
+      
+      // Sélectionner automatiquement la première caméra si aucune n'est sélectionnée
+      if (videoDevices.length > 0 && !selectedCameraId) {
+        setSelectedCameraId(videoDevices[0].deviceId);
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'énumération des caméras:", error);
+    }
+  };
+
+  // Appeler enumerateCameras au montage du composant
+  useEffect(() => {
+    enumerateCameras();
+  }, []);
+
+  const startCamera = async (deviceId?: string) => {
     // Réinitialiser les erreurs
     setCameraError(null);
     setPermissionDenied(false);
@@ -125,8 +159,21 @@ export default function Scanner() {
     }
 
     try {
+      // Construire les contraintes vidéo
+      const videoConstraints: MediaTrackConstraints = {
+        width: { ideal: 1920 },
+        height: { ideal: 1080 }
+      };
+
+      // Utiliser deviceId si fourni, sinon facingMode
+      if (deviceId || selectedCameraId) {
+        videoConstraints.deviceId = { exact: deviceId || selectedCameraId! };
+      } else {
+        videoConstraints.facingMode = facingMode;
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } }
+        video: videoConstraints
       });
       
       if (videoRef.current) {
@@ -137,6 +184,9 @@ export default function Scanner() {
         setFlowerResult(null);
         setCameraError(null);
         setPermissionDenied(false);
+        
+        // Énumérer les caméras après avoir obtenu la permission
+        await enumerateCameras();
       }
     } catch (error: any) {
       console.error("Camera error:", error);
@@ -206,13 +256,62 @@ export default function Scanner() {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setCapturedImage(e.target?.result as string);
+        const imageDataUrl = e.target?.result as string;
+        setImageToCrop(imageDataUrl);
+        setShowCropper(true);
         setBouquetResult(null);
         setFlowerResult(null);
       };
       reader.readAsDataURL(file);
     }
   };
+
+  // Callback quand la zone recadrée change
+  const onCropComplete = useCallback((croppedArea: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  // Créer l'image recadrée
+  const createCroppedImage = useCallback(async () => {
+    if (!imageToCrop || !croppedAreaPixels) return;
+
+    try {
+      const image = new Image();
+      image.src = imageToCrop;
+      await new Promise((resolve) => {
+        image.onload = resolve;
+      });
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      canvas.width = croppedAreaPixels.width;
+      canvas.height = croppedAreaPixels.height;
+
+      ctx.drawImage(
+        image,
+        croppedAreaPixels.x,
+        croppedAreaPixels.y,
+        croppedAreaPixels.width,
+        croppedAreaPixels.height,
+        0,
+        0,
+        croppedAreaPixels.width,
+        croppedAreaPixels.height
+      );
+
+      const croppedImageUrl = canvas.toDataURL('image/jpeg', 0.9);
+      setCapturedImage(croppedImageUrl);
+      setShowCropper(false);
+      setImageToCrop(null);
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+    } catch (error) {
+      console.error('Erreur lors du recadrage:', error);
+      toast.error('Erreur lors du recadrage de l\'image');
+    }
+  }, [imageToCrop, croppedAreaPixels]);
 
   const analyzeImage = async () => {
     if (!capturedImage) return;
@@ -337,11 +436,29 @@ export default function Scanner() {
               <canvas ref={canvasRef} className="hidden" />
             </div>
 
+            {/* Sélecteur de caméra */}
+            {availableCameras.length > 1 && !cameraActive && !capturedImage && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Camera className="h-4 w-4" />
+                <select
+                  value={selectedCameraId || ""}
+                  onChange={(e) => setSelectedCameraId(e.target.value)}
+                  className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  {availableCameras.map((camera, index) => (
+                    <option key={camera.deviceId} value={camera.deviceId}>
+                      {camera.label || `Caméra ${index + 1}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             {/* Controls */}
             <div className="flex flex-wrap gap-3 justify-center">
               {!cameraActive && !capturedImage && (
                 <>
-                  <Button onClick={startCamera} size="lg" className="gap-2">
+                  <Button onClick={() => startCamera()} size="lg" className="gap-2">
                     <Camera className="h-5 w-5" />
                     {cameraError ? "Réessayer" : "Ouvrir la caméra"}
                   </Button>
@@ -371,6 +488,26 @@ export default function Scanner() {
                     <Camera className="h-5 w-5" />
                     Capturer
                   </Button>
+                  
+                  {availableCameras.length > 1 && (
+                    <Button
+                      onClick={() => {
+                        const currentIndex = availableCameras.findIndex(c => c.deviceId === selectedCameraId);
+                        const nextIndex = (currentIndex + 1) % availableCameras.length;
+                        const nextCamera = availableCameras[nextIndex];
+                        setSelectedCameraId(nextCamera.deviceId);
+                        stopCamera();
+                        startCamera(nextCamera.deviceId);
+                      }}
+                      variant="outline"
+                      size="lg"
+                      className="gap-2"
+                    >
+                      <SwitchCamera className="h-5 w-5" />
+                      Changer
+                    </Button>
+                  )}
+                  
                   <Button onClick={stopCamera} variant="outline" size="lg">
                     Annuler
                   </Button>
@@ -569,6 +706,69 @@ export default function Scanner() {
           </p>
         </div>
       </div>
+
+      {/* Modal de recadrage d'image */}
+      <Dialog open={showCropper} onOpenChange={(open) => {
+        if (!open) {
+          setShowCropper(false);
+          setImageToCrop(null);
+          setCrop({ x: 0, y: 0 });
+          setZoom(1);
+        }
+      }}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Recadrer l'image</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {/* Zone de recadrage */}
+            <div className="relative h-96 bg-muted rounded-lg overflow-hidden">
+              {imageToCrop && (
+                <Cropper
+                  image={imageToCrop}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={4 / 3}
+                  onCropChange={setCrop}
+                  onZoomChange={setZoom}
+                  onCropComplete={onCropComplete}
+                />
+              )}
+            </div>
+
+            {/* Contrôle de zoom */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Zoom</label>
+              <Slider
+                value={[zoom]}
+                min={1}
+                max={3}
+                step={0.1}
+                onValueChange={(values) => setZoom(values[0])}
+                className="w-full"
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowCropper(false);
+                setImageToCrop(null);
+                setCrop({ x: 0, y: 0 });
+                setZoom(1);
+              }}
+            >
+              Annuler
+            </Button>
+            <Button onClick={createCroppedImage}>
+              Valider le recadrage
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
