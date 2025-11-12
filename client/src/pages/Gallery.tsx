@@ -16,18 +16,20 @@ export default function Gallery() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
   const { data: galleryItems, isLoading } = trpc.gallery.list.useQuery();
+  
+  type GalleryItem = NonNullable<typeof galleryItems>[number];
 
   // Extract unique types
   const types = useMemo(() => {
     if (!galleryItems) return [];
-    const uniqueTypes = Array.from(new Set(galleryItems.map(item => item.bouquetType).filter(Boolean)));
+    const uniqueTypes = Array.from(new Set(galleryItems.map((item: GalleryItem) => item.bouquetType).filter(Boolean)));
     return uniqueTypes as string[];
   }, [galleryItems]);
 
   // Filter gallery items
   const filteredItems = useMemo(() => {
     if (!galleryItems) return [];
-    return galleryItems.filter(item => {
+    return galleryItems.filter((item: GalleryItem) => {
       const matchesSearch = searchQuery === "" ||
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -96,7 +98,7 @@ export default function Gallery() {
                   className="cursor-pointer hover:bg-sage-100 transition-colors"
                   onClick={() => setSelectedType(type)}
                 >
-                  {type} ({galleryItems?.filter(item => item.bouquetType === type).length || 0})
+                  {type} ({galleryItems?.filter((item: GalleryItem) => item.bouquetType === type).length || 0})
                 </Badge>
               ))}
             </div>
@@ -125,7 +127,7 @@ export default function Gallery() {
         <div className="container">
           {filteredItems && filteredItems.length > 0 ? (
             <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-              {filteredItems.map((item) => (
+              {filteredItems.map((item: GalleryItem) => (
                 <Card
                   key={item.id}
                   className="break-inside-avoid cursor-pointer group overflow-hidden border-sage-200 hover:shadow-xl transition-all duration-300"

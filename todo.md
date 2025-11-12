@@ -661,4 +661,36 @@
 - [x] Ajouter bouton "Commander rapidement" dans la liste des contacts
 - [x] Créer le flux de commande rapide en un clic
 - [x] Tester l'intégration complète (ajout contact, notifications, commande rapide)
-- [ ] Créer le checkpoint v15.4
+- [x] Créer le checkpoint v15.4
+
+## Phase 27 - Implémentation contenu onglets Dashboard
+- [ ] Analyser Dashboard.tsx pour identifier les onglets vides
+- [ ] Créer les tables database nécessaires (loyalty_points, subscriptions, referrals, favorites, reviews)
+- [ ] Implémenter l'onglet Fidélité (affichage points, historique, récompenses)
+- [ ] Implémenter l'onglet Abonnements (liste abonnements actifs, gestion, annulation)
+- [ ] Implémenter l'onglet Parrainage (code parrainage, filleuls, récompenses)
+- [ ] Implémenter l'onglet Favoris (liste bouquets favoris, actions rapides)
+- [ ] Implémenter l'onglet Avis (historique avis laissés, modération)
+- [ ] Créer les helpers backend pour chaque fonctionnalité
+- [ ] Créer les routers tRPC pour chaque onglet
+- [ ] Tester l'intégration complète de tous les onglets
+- [ ] Créer le checkpoint v16.0
+
+## Phase 28 - Amélioration onglets Anniversaires et Parrainage du Dashboard
+- [ ] Analyser le contenu actuel des onglets Anniversaires et Parrainage
+- [ ] Ajouter bouton "+" pour ajouter un contact d'anniversaire
+- [ ] Afficher la liste des contacts d'anniversaire avec dates
+- [ ] Afficher les alertes des anniversaires à venir (30 jours)
+- [ ] Créer le formulaire d'ajout de contact dans le Dashboard
+- [ ] Améliorer l'onglet Parrainage avec code de parrainage et stats
+- [ ] Corriger le bug des Tabs React qui ne changent pas de contenu
+- [ ] Tester l'intégration complète
+- [ ] Créer le checkpoint v15.5
+
+## Phase 29 - Correction erreurs TypeScript frontend
+- [x] Corriger l'erreur "Parameter 'scan' implicitly has an 'any' type" dans History.tsx
+- [x] Corriger l'erreur "Property 'query' does not exist" dans Scanner.tsx (ligne 92)
+- [x] Corriger l'erreur "Property 'query' does not exist" dans Scanner.tsx (ligne 103)
+- [x] Corriger l'erreur "Parameter 'item' implicitly has an 'any' type" dans Wishlist.tsx
+- [x] Tester que le serveur compile sans erreurs TypeScript
+- [ ] Créer le checkpoint v15.5

@@ -27,6 +27,8 @@ export default function BouquetRatingsSection({ bouquetId }: BouquetRatingsSecti
 
   // Récupérer toutes les notes
   const { data: ratings, isLoading } = trpc.bouquetRatings.list.useQuery({ bouquetId });
+  
+  type Rating = NonNullable<typeof ratings>[number];
 
   // Récupérer la note de l'utilisateur connecté
   const { data: userRating } = trpc.bouquetRatings.getUserRating.useQuery(
@@ -198,7 +200,7 @@ export default function BouquetRatingsSection({ bouquetId }: BouquetRatingsSecti
         </div>
       ) : ratings && ratings.length > 0 ? (
         <div className="space-y-4">
-          {ratings.map((rating) => (
+          {ratings.map((rating: Rating) => (
             <div
               key={rating.id}
               className="rounded-lg border border-sage-100 bg-white p-4"

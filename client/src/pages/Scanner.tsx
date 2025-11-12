@@ -11,6 +11,7 @@ import SocialShareButtons from "@/components/SocialShareButtons";
 
 export default function Scanner() {
   const [, setLocation] = useLocation();
+  const trpcUtils = trpc.useUtils();
   const [mode, setMode] = useState<"bouquet" | "flower">("flower");
   const [cameraActive, setCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -89,7 +90,7 @@ export default function Scanner() {
   // Rechercher la fleur dans le catalogue
   const searchInCatalog = async (flowerName: string) => {
     try {
-      const result = await trpc.flowerScanner.search.query({ flowerName });
+      const result = await trpcUtils.flowerScanner.search.fetch({ flowerName });
       return result;
     } catch (error) {
       console.error("Erreur lors de la recherche dans le catalogue:", error);
@@ -100,7 +101,7 @@ export default function Scanner() {
   // Trouver des fleurs similaires
   const findSimilar = async (color: string, emotions?: string[]) => {
     try {
-      const result = await trpc.flowerScanner.findSimilar.query({ color, emotions });
+      const result = await trpcUtils.flowerScanner.findSimilar.fetch({ color, emotions });
       return result;
     } catch (error) {
       console.error("Erreur lors de la recherche de fleurs similaires:", error);

@@ -18,6 +18,8 @@ export default function Wishlist() {
   const { data: wishlistItems, isLoading, refetch } = trpc.wishlist.list.useQuery(undefined, {
     enabled: !!user,
   });
+  
+  type WishlistItem = NonNullable<typeof wishlistItems>[number];
 
   const removeMutation = trpc.wishlist.remove.useMutation({
     onSuccess: () => {
@@ -105,7 +107,7 @@ export default function Wishlist() {
         <div className="container max-w-6xl">
           {wishlistItems && wishlistItems.length > 0 ? (
             <div className="grid gap-6">
-              {wishlistItems.map((item) => (
+              {wishlistItems.map((item: WishlistItem) => (
                 <Card key={item.id} className="overflow-hidden border-sage-200 hover:shadow-lg transition-shadow">
                   <div className="grid md:grid-cols-[300px_1fr] gap-6">
                     {/* Image */}

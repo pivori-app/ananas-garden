@@ -13,6 +13,7 @@ import {
   Star,
   Trophy,
   Gift,
+  Plus,
 } from "lucide-react";
 import { Link } from "wouter";
 import ReviewForm from "@/components/ReviewForm";
@@ -39,6 +40,12 @@ export default function Dashboard() {
   const { data: testimonials } = trpc.testimonials.myTestimonials.useQuery(undefined, {
     enabled: isAuthenticated,
   });
+
+  const { data: upcomingBirthdays } = trpc.birthdays.upcoming.useQuery({ daysAhead: 30 }, {
+    enabled: isAuthenticated,
+  });
+  
+  type BirthdayContact = NonNullable<typeof upcomingBirthdays>[number];
 
   if (loading) {
     return (
@@ -307,25 +314,86 @@ export default function Dashboard() {
           </TabsContent>
 
           {/* Birthdays Tab */}
-          <TabsContent value="birthdays" className="space-y-4">
+          <TabsContent value="birthdays">
             <Card>
               <CardHeader>
-                <CardTitle>Mes Anniversaires</CardTitle>
-                <CardDescription>Ne manquez plus jamais un anniversaire important</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <Calendar className="w-16 h-16 mx-auto mb-4 text-sage" />
-                  <h3 className="text-xl font-semibold mb-2">Gestion des anniversaires</h3>
-                  <p className="text-charcoal/70 mb-6 max-w-md mx-auto">
-                    Enregistrez les anniversaires de vos proches et recevez des rappels pour ne jamais oublier d'envoyer un bouquet !
-                  </p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Mes Anniversaires</CardTitle>
+                    <CardDescription>Ne manquez plus jamais un anniversaire important</CardDescription>
+                  </div>
                   <Link href="/birthdays">
-                    <Button className="bg-sage hover:bg-sage/90">
-                      Gérer mes anniversaires
+                    <Button size="sm" className="bg-sage hover:bg-sage/90">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Ajouter un contact
                     </Button>
                   </Link>
                 </div>
+              </CardHeader>
+              <CardContent>
+                {upcomingBirthdays && upcomingBirthdays.length > 0 ? (
+                  <div className="space-y-4">
+                    <div className="text-sm font-medium text-charcoal/70 mb-2">
+                      Anniversaires à venir (30 prochains jours)
+                    </div>
+                    {upcomingBirthdays.map((contact: BirthdayContact) => {
+                      const daysUntil = Math.ceil(
+                        (new Date(contact.birthdate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+                      );
+                      const badgeColor =
+                        daysUntil <= 7
+                          ? "bg-red-100 text-red-700"
+                          : daysUntil <= 14
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-green-100 text-green-700";
+
+                      return (
+                        <div
+                          key={contact.id}
+                          className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-sage/20 flex items-center justify-center">
+                              <Calendar className="w-6 h-6 text-sage" />
+                            </div>
+                            <div>
+                              <div className="font-medium">
+                                {contact.firstName} {contact.lastName}
+                              </div>
+                              <div className="text-sm text-charcoal/60">
+                                {new Date(contact.birthdate).toLocaleDateString("fr-FR", {
+                                  day: "numeric",
+                                  month: "long",
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className={`px-3 py-1 rounded-full text-sm ${badgeColor}`}>
+                              Dans {daysUntil} jour{daysUntil > 1 ? "s" : ""}
+                            </span>
+                            <Link href="/birthdays">
+                              <Button size="sm" variant="outline">
+                                Voir détails
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Calendar className="w-16 h-16 mx-auto mb-4 text-charcoal/30" />
+                    <p className="text-charcoal/60 mb-4">Aucun anniversaire à venir dans les 30 prochains jours</p>
+                    <Link href="/birthdays">
+                      <Button className="bg-sage hover:bg-sage/90">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Ajouter un contact
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

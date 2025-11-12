@@ -13,10 +13,12 @@ import { fr } from "date-fns/locale";
 export default function History() {
   const [, setLocation] = useLocation();
   const [filterType, setFilterType] = useState<"all" | "flower" | "bouquet">("all");
-  const [selectedScan, setSelectedScan] = useState<any | null>(null);
 
   // Récupérer l'historique
   const { data: history, isLoading, refetch } = trpc.scanHistory.list.useQuery({ limit: 50 });
+  
+  type ScanHistoryItem = NonNullable<typeof history>[number];
+  const [selectedScan, setSelectedScan] = useState<ScanHistoryItem | null>(null);
 
   // Mutation pour supprimer un scan
   const deleteMutation = trpc.scanHistory.delete.useMutation({
@@ -31,7 +33,7 @@ export default function History() {
   });
 
   // Filtrer l'historique
-  const filteredHistory = history?.filter((scan) => {
+  const filteredHistory = history?.filter((scan: ScanHistoryItem) => {
     if (filterType === "all") return true;
     return scan.scanType === filterType;
   }) || [];
@@ -42,7 +44,7 @@ export default function History() {
     }
   };
 
-  const handleViewDetails = (scan: any) => {
+  const handleViewDetails = (scan: ScanHistoryItem) => {
     setSelectedScan(scan);
   };
 
@@ -74,11 +76,11 @@ export default function History() {
             </TabsTrigger>
             <TabsTrigger value="flower" className="gap-2">
               <Flower2 className="h-4 w-4" />
-              Fleurs ({history?.filter(s => s.scanType === "flower").length || 0})
+              Fleurs ({history?.filter((s: ScanHistoryItem) => s.scanType === "flower").length || 0})
             </TabsTrigger>
             <TabsTrigger value="bouquet" className="gap-2">
               <Sparkles className="h-4 w-4" />
-              Bouquets ({history?.filter(s => s.scanType === "bouquet").length || 0})
+              Bouquets ({history?.filter((s: ScanHistoryItem) => s.scanType === "bouquet").length || 0})
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -114,7 +116,7 @@ export default function History() {
           <div className="grid md:grid-cols-2 gap-6">
             {/* List of Scans */}
             <div className="space-y-4">
-              {filteredHistory.map((scan) => (
+              {filteredHistory.map((scan: ScanHistoryItem) => (
                 <Card 
                   key={scan.id} 
                   className={`cursor-pointer transition-colors ${
