@@ -106,6 +106,11 @@ export const orders = mysqlTable("orders", {
   vasePrice: int("vasePrice").default(0).notNull(), // Prix en centimes
   totalPrice: int("totalPrice").notNull(), // Prix total en centimes
   status: mysqlEnum("status", ["pending", "confirmed", "preparing", "delivered", "cancelled"]).default("pending").notNull(),
+  paymentMethod: mysqlEnum("paymentMethod", ["paypal", "stripe", "card"]),
+  paymentStatus: mysqlEnum("paymentStatus", ["pending", "completed", "failed", "refunded"]).default("pending"),
+  paypalOrderId: varchar("paypalOrderId", { length: 255 }), // ID de la commande PayPal
+  paypalPayerId: varchar("paypalPayerId", { length: 255 }), // ID du payeur PayPal
+  paypalPayerEmail: varchar("paypalPayerEmail", { length: 320 }), // Email du payeur PayPal
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

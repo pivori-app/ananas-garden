@@ -552,6 +552,56 @@ export const appRouter = router({
         return { success };
       }),
   }),
+
+  // Routes PayPal pour les paiements
+  paypal: router({
+    createOrder: protectedProcedure
+      .input(z.object({
+        orderId: z.number(),
+        amount: z.string(),
+        currency: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { createPayPalOrder } = await import("./paypal");
+        const paypalOrder = await createPayPalOrder({
+          orderId: input.orderId,
+          amount: input.amount,
+          currency: input.currency || "EUR",
+        });
+        
+        // Mettre à jour la commande avec l'ID PayPal
+        const { updateOrderPayPalId } = await import("./db");
+        await updateOrderPayPalId(input.orderId, paypalOrder.id);
+        
+        return paypalOrder;
+      }),
+    captureOrder: protectedProcedure
+      .input(z.object({
+        paypalOrderId: z.string(),
+        orderId: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        const { capturePayPalOrder } = await import("./paypal");
+        const captureResult = await capturePayPalOrder(input.paypalOrderId);
+        
+        // Mettre à jour le statut de paiement de la commande
+        const { updateOrderPaymentStatus } = await import("./db");
+        await updateOrderPaymentStatus(
+          input.orderId,
+          captureResult.status === "COMPLETED" ? "completed" : "failed",
+          captureResult.payerId,
+          captureResult.payerEmail
+        );
+        
+        return captureResult;
+      }),
+    getOrderDetails: protectedProcedure
+      .input(z.object({ paypalOrderId: z.string() }))
+      .query(async ({ input }) => {
+        const { getPayPalOrderDetails } = await import("./paypal");
+        return await getPayPalOrderDetails(input.paypalOrderId);
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

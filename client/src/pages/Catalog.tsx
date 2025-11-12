@@ -185,6 +185,7 @@ export default function Catalog() {
                       <img 
                         src={flower.imageUrl} 
                         alt={flower.name}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                       />
                     </div>

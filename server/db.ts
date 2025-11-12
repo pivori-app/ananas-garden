@@ -753,3 +753,69 @@ export async function getReferralStats(userId: number) {
     totalPoints: allReferrals.reduce((sum, r) => sum + (r.pointsAwarded || 0), 0),
   };
 }
+
+// ============================================
+// PayPal Payment Functions
+// ============================================
+
+export async function updateOrderPayPalId(orderId: number, paypalOrderId: string): Promise<void> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update order: database not available");
+    return;
+  }
+
+  try {
+    await db
+      .update(orders)
+      .set({
+        paypalOrderId,
+        paymentMethod: "paypal",
+        updatedAt: new Date(),
+      })
+      .where(eq(orders.id, orderId));
+  } catch (error) {
+    console.error("[Database] Failed to update order PayPal ID:", error);
+    throw error;
+  }
+}
+
+export async function updateOrderPaymentStatus(
+  orderId: number,
+  paymentStatus: "pending" | "completed" | "failed" | "refunded",
+  paypalPayerId?: string,
+  paypalPayerEmail?: string
+): Promise<void> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update order: database not available");
+    return;
+  }
+
+  try {
+    const updateData: any = {
+      paymentStatus,
+      updatedAt: new Date(),
+    };
+
+    if (paymentStatus === "completed") {
+      updateData.status = "confirmed";
+    }
+
+    if (paypalPayerId) {
+      updateData.paypalPayerId = paypalPayerId;
+    }
+
+    if (paypalPayerEmail) {
+      updateData.paypalPayerEmail = paypalPayerEmail;
+    }
+
+    await db
+      .update(orders)
+      .set(updateData)
+      .where(eq(orders.id, orderId));
+  } catch (error) {
+    console.error("[Database] Failed to update order payment status:", error);
+    throw error;
+  }
+}

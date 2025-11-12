@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import PayPalButton from "@/components/PayPalButton";
 
 export default function Checkout() {
   const [, setLocation] = useLocation();
@@ -35,27 +36,17 @@ export default function Checkout() {
     { enabled: !!sessionId }
   );
 
+  const [createdOrderId, setCreatedOrderId] = useState<number | null>(null);
+  const [showPayPal, setShowPayPal] = useState(false);
+
   const createOrder = trpc.orders.create.useMutation({
     onSuccess: async (data: any) => {
-      toast.success("Commande créée ! Redirection vers le paiement...");
-      
-      // Créer la session Stripe
-      createCheckoutSession.mutate({ orderId: data.orderId });
+      toast.success("Commande créée ! Procédez au paiement...");
+      setCreatedOrderId(data.orderId);
+      setShowPayPal(true);
     },
     onError: (error: any) => {
       toast.error(error.message || "Erreur lors de la création de la commande");
-    }
-  });
-
-  const createCheckoutSession = trpc.payment.createCheckoutSession.useMutation({
-    onSuccess: (data: any) => {
-      if (data.url) {
-        toast.info("💳 Redirection vers le paiement sécurisé...");
-        window.open(data.url, "_blank");
-      }
-    },
-    onError: (error: any) => {
-      toast.error("Erreur lors de la création de la session de paiement");
     }
   });
 
@@ -275,24 +266,50 @@ export default function Checkout() {
                   <span className="text-primary">{totalPrice.toFixed(2)} €</span>
                 </div>
 
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full h-14 text-lg"
-                  disabled={createOrder.isPending}
-                >
-                  {createOrder.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Traitement...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="mr-2 h-5 w-5" />
-                      Confirmer la commande
-                    </>
-                  )}
-                </Button>
+                {!showPayPal ? (
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full h-14 text-lg"
+                    disabled={createOrder.isPending}
+                  >
+                    {createOrder.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Traitement...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="mr-2 h-5 w-5" />
+                        Confirmer la commande
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="p-4 bg-green-50 text-green-700 rounded-lg text-center">
+                      <CheckCircle2 className="mx-auto h-8 w-8 mb-2" />
+                      <p className="font-medium">Commande créée !</p>
+                      <p className="text-sm">Procédez au paiement avec PayPal</p>
+                    </div>
+                    {createdOrderId && (
+                      <PayPalButton
+                        orderId={createdOrderId}
+                        amount={totalPrice.toFixed(2)}
+                        currency="EUR"
+                        onSuccess={(paypalOrderId) => {
+                          toast.success("🎉 Paiement réussi !");
+                          setTimeout(() => {
+                            setLocation(`/order-confirmation?orderId=${createdOrderId}`);
+                          }, 1500);
+                        }}
+                        onError={(error) => {
+                          console.error("Erreur PayPal:", error);
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
 
                 {subtotal < 50 && (
                   <p className="mt-4 text-center text-xs text-muted-foreground">

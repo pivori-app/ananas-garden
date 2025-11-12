@@ -63,6 +63,7 @@ export default function Header() {
     { href: "/", label: "Accueil" },
     { href: "/create", label: "Créer un bouquet" },
     { href: "/scanner", label: "Scanner" },
+    { href: "/how-it-works", label: "Comment ça marche" },
     { href: "/blog", label: "Blog" },
     { href: "/cart", label: "Panier", badge: cartItemCount },
   ];

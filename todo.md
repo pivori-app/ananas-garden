@@ -272,4 +272,34 @@
   - [x] Lien "Mon compte" visible avec icône User
   - [x] Positionné après Panier comme prévu
   - [x] Affichage conditionnel (isAuthenticated) fonctionnel
-- [ ] Créer le checkpoint final v9.3
+- [x] Créer le checkpoint final v9.3 (f9818345)
+
+## Phase 15 - Intégration PayPal et optimisations expertes
+- [x] Intégration PayPal pour les paiements
+  - [x] Installer le SDK PayPal React (@paypal/react-paypal-js)
+  - [x] Créer le module paypal.ts avec API REST
+  - [x] Ajouter les champs PayPal dans le schéma orders
+  - [x] Créer les procédures tRPC (createOrder, captureOrder, getOrderDetails)
+  - [x] Créer les fonctions DB (updateOrderPayPalId, updateOrderPaymentStatus)
+  - [x] Créer le composant PayPalButton
+  - [x] Intégrer le bouton PayPal dans la page Checkout
+  - [x] Mettre à jour le statut des commandes après paiement
+- [x] Page "Comment ça marche" détaillée
+  - [x] Créer la page /how-it-works avec guide visuel complet
+  - [x] 6 étapes détaillées avec icônes et descriptions
+  - [x] Section "Pourquoi choisir Ananas Garden" avec 4 features
+  - [x] CTAs pour scanner et catalogue
+  - [x] Ajouter le lien dans le header (navItems)
+  - [ ] Créer une FAQ intégr- [x] Optimisation des images
+  - [x] Implémenter le lazy loading sur toutes les images (8 images dans 7 fichiers)
+  - [x] Images Catalog, BouquetDetail, Scanner, Testimonials, Dashboard, Blog, BlogPost
+  - [x] Utilisation de l'attribut loading="lazy" natif du navigateur
+  - Note: Les images proviennent d'Unsplash (URLs externes), pas de conversion WebP nécessairer l'amélioration des performances
+- [x] Tester toutes les nouvelles fonctionnalités
+  - [x] Serveur redémarré avec succès (aucune erreur TypeScript/LSP)
+  - [x] Page d'accueil : Lien "Comment ça marche" visible dans le header
+  - [x] Page Comment ça marche : Affichage correct des 6 étapes détaillées
+  - [x] Section "Pourquoi choisir Ananas Garden" avec 4 features
+  - [x] Lazy loading actif sur toutes les images
+  - [x] PayPal intégré dans le backend (procédures tRPC créées)
+- [ ] Créer le checkpoint final v10.0

@@ -29,6 +29,7 @@ import Contact from "./pages/Contact";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Referral from "./pages/Referral";
+import HowItWorks from "./pages/HowItWorks";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -59,6 +60,7 @@ function Router() {
         <Route path="/contact" component={Contact} />
         <Route path="/blog" component={Blog} />
         <Route path="/blog/:slug" component={BlogPost} />
+        <Route path="/how-it-works" component={HowItWorks} />
         <Route path="/referral" component={Referral} />
         <Route path={"/404"} component={NotFound} />
         {/* Final fallback route */}
