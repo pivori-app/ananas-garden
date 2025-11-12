@@ -765,3 +765,15 @@
 - [x] Auditer le déploiement Vercel (configuration, variables d'environnement, build, domaines)
 - [x] Auditer la configuration Supabase (base de données, authentification, sécurité, RLS)
 - [x] Générer un rapport d'audit complet avec recommandations et plan d'action (audit-deploiement.md)
+
+## Déploiement production - Mode expert
+- [x] Installer rollup-plugin-visualizer pour analyser le bundle
+- [x] Configurer le code splitting dans vite.config.ts (react-vendor, trpc, ui-radix, ui-components)
+- [x] Implémenter le lazy loading des routes avec React.lazy() (28 routes lazy loaded)
+- [x] Ajouter les headers de sécurité manquants (CSP, HSTS, Referrer-Policy, Permissions-Policy)
+- [x] Optimiser la configuration de cache Vercel (Cache-Control immutable pour assets)
+- [ ] Pousser les optimisations vers GitHub
+- [ ] Vérifier l'activation du webhook Vercel
+- [ ] Déclencher un déploiement manuel si nécessaire
+- [ ] Valider le déploiement sur ananas-garden.vercel.app
+- [ ] Créer un checkpoint final de production

@@ -7,34 +7,44 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-import CreateBouquet from "./pages/CreateBouquet";
-import BouquetDetail from "./pages/BouquetDetail";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import OrderConfirmation from "./pages/OrderConfirmation";
-import Catalog from "./pages/Catalog";
-import Scanner from "./pages/Scanner";
-import Favorites from "./pages/Favorites";
-import LoyaltyPoints from "./pages/LoyaltyPoints";
-import Subscriptions from "./pages/Subscriptions";
-import Testimonials from "./pages/Testimonials";
-import Dashboard from "./pages/Dashboard";
-import Account from "./pages/Account";
-import Notifications from "./pages/Notifications";
-import BouquetConfigurator from "./pages/BouquetConfigurator";
-import CGV from "./pages/CGV";
-import MentionsLegales from "./pages/MentionsLegales";
-import PolitiqueConfidentialite from "./pages/PolitiqueConfidentialite";
-import Contact from "./pages/Contact";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
-import Referral from "./pages/Referral";
-import HowItWorks from "./pages/HowItWorks";
-import Gallery from "./pages/Gallery";
-import Wishlist from "./pages/Wishlist";
-import FAQ from "./pages/FAQ";
-import History from "./pages/History";
-import Birthdays from "./pages/Birthdays";
+import { lazy, Suspense } from "react";
+
+// Lazy load des routes secondaires pour réduire le bundle initial
+const CreateBouquet = lazy(() => import("./pages/CreateBouquet"));
+const BouquetDetail = lazy(() => import("./pages/BouquetDetail"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Checkout = lazy(() => import("./pages/Checkout"));
+const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
+const Catalog = lazy(() => import("./pages/Catalog"));
+const Scanner = lazy(() => import("./pages/Scanner"));
+const Favorites = lazy(() => import("./pages/Favorites"));
+const LoyaltyPoints = lazy(() => import("./pages/LoyaltyPoints"));
+const Subscriptions = lazy(() => import("./pages/Subscriptions"));
+const Testimonials = lazy(() => import("./pages/Testimonials"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Account = lazy(() => import("./pages/Account"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+const BouquetConfigurator = lazy(() => import("./pages/BouquetConfigurator"));
+const CGV = lazy(() => import("./pages/CGV"));
+const MentionsLegales = lazy(() => import("./pages/MentionsLegales"));
+const PolitiqueConfidentialite = lazy(() => import("./pages/PolitiqueConfidentialite"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+const Referral = lazy(() => import("./pages/Referral"));
+const HowItWorks = lazy(() => import("./pages/HowItWorks"));
+const Gallery = lazy(() => import("./pages/Gallery"));
+const Wishlist = lazy(() => import("./pages/Wishlist"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const History = lazy(() => import("./pages/History"));
+const Birthdays = lazy(() => import("./pages/Birthdays"));
+
+// Composant de loading pour les routes lazy
+const PageLoader = () => (
+  <div className="flex min-h-screen items-center justify-center">
+    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+  </div>
+);
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -42,6 +52,7 @@ function Router() {
     <>
       <Header />
       <div className="flex min-h-screen flex-col">
+      <Suspense fallback={<PageLoader />}>
       <Switch>
         <Route path={"/"} component={Home} />
         <Route path="/create" component={CreateBouquet} />
@@ -76,6 +87,7 @@ function Router() {
         {/* Final fallback route */}
         <Route component={NotFound} />
       </Switch>
+      </Suspense>
       <Footer />
       </div>
     </>
