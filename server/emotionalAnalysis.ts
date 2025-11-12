@@ -149,6 +149,11 @@ export async function generateBouquetRecommendation(
     color: f.color
   }));
 
+  // Valider que nous avons des fleurs à proposer
+  if (selectedFlowers.length === 0) {
+    throw new Error("Aucune fleur sélectionnée pour créer le bouquet");
+  }
+
   const llmResponse = await invokeLLM({
     messages: [
       {
@@ -210,21 +215,37 @@ Crée une composition harmonieuse.`
     }
   });
 
-  const compositionContent = llmResponse.choices[0].message.content;
-  if (!compositionContent || typeof compositionContent !== 'string') {
-    throw new Error("No composition from LLM");
+  // Validation robuste de la réponse LLM
+  if (!llmResponse || !llmResponse.choices || llmResponse.choices.length === 0) {
+    throw new Error("Aucune réponse du service d'IA. Veuillez réessayer.");
   }
 
-  const composition = JSON.parse(compositionContent) as {
+  const compositionContent = llmResponse.choices[0].message.content;
+  if (!compositionContent || typeof compositionContent !== 'string') {
+    throw new Error("Réponse invalide du service d'IA. Veuillez réessayer.");
+  }
+
+  let composition: {
     flowers: Array<{ id: number; quantity: number; reason: string }>;
     explanation: string;
   };
+
+  try {
+    composition = JSON.parse(compositionContent);
+  } catch (error) {
+    throw new Error("Erreur lors de l'analyse de la composition. Veuillez réessayer.");
+  }
+
+  // Valider que la composition contient des fleurs
+  if (!composition.flowers || composition.flowers.length === 0) {
+    throw new Error("La composition générée ne contient aucune fleur. Veuillez réessayer.");
+  }
 
   // Construire la recommandation finale
   const recommendation: BouquetRecommendation = {
     flowers: [],
     totalPrice: 0,
-    explanation: composition.explanation
+    explanation: composition.explanation || "Bouquet personnalisé créé avec soin"
   };
 
   for (const item of composition.flowers) {
@@ -237,6 +258,11 @@ Crée une composition harmonieuse.`
       });
       recommendation.totalPrice += flower.pricePerStem * item.quantity;
     }
+  }
+
+  // Vérifier que nous avons au moins une fleur dans la recommandation finale
+  if (recommendation.flowers.length === 0) {
+    throw new Error("Impossible de créer une composition avec les fleurs disponibles. Veuillez réessayer.");
   }
 
   return recommendation;

@@ -634,3 +634,10 @@
 - [ ] Tester le bouton "Générer mon bouquet"
 - [ ] Vérifier que la génération fonctionne correctement
 - [ ] Créer le checkpoint v15.1
+
+## Phase 24 - Correction bug génération bouquet
+- [x] Identifier la source de l'erreur "Cannot read properties of undefined (reading '0')"
+- [x] Analyser generateBouquetRecommendation dans emotionalAnalysis.ts
+- [x] Corriger le bug et ajouter des validations
+- [x] Tester la génération complète d'un bouquet
+- [ ] Créer le checkpoint v15.2
