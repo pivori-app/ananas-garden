@@ -103,6 +103,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/faq" className="text-sage-600 transition-colors hover:text-sage-900">
+                  FAQ
+                </Link>
+              </li>
+              <li>
                 <Link href="/contact" className="text-sage-600 transition-colors hover:text-sage-900">
                   Contact
                 </Link>

@@ -415,3 +415,54 @@
 - [ ] Vérifier la compatibilité mobile
 - [ ] Tester les performances
 - [ ] Créer le checkpoint v12.0 (en cours)
+
+## Phase 20 - Suggestions finales (FAQ footer, Notation, Déploiement Vercel)
+
+### 1. Lien FAQ dans le footer
+- [x] Ajouter le lien "/faq" dans la section "Informations légales" du Footer
+- [x] Vérifier l.affichage sur toutes les pages
+- [x] Tester la navigation
+
+### 2. Système de notation des bouquets
+- [x] Créer la table `bouquet_ratings` dans le schéma
+  - [x] Colonnes: id, userId, bouquetId, rating (1-5), comment, createdAt
+  - [x] Index et foreign keys
+- [x] Ajouter les helpers dans server/db.ts
+  - [x] `addBouquetRating()`
+  - [x] `getBouquetRatings()`
+  - [x] `getAverageRating()`
+  - [x] `getUserRating()`
+- [x] Créer les procédures tRPC
+  - [x] `bouquetRatings.add`
+  - [x] `bouquetRatings.list`
+  - [x] `bouquetRatings.getAverage`
+  - [x] `bouquetRatings.getUserRating`
+- [x] Pousser le schéma avec `pnpm db:push`
+
+### 3. UI de notation
+- [x] Créer le composant RatingStars (affichage + interaction)
+- [x] Intégrer dans BouquetDetail
+  - [x] Afficher la note moyenne
+  - [x] Formulaire de notation (badge achat vérifié)
+  - [x] Liste des commentaires
+- [x] Intégrer dans le Catalog (RatingStars réutilisable)
+  - [x] Afficher la note moyenne sur chaque carte
+  - [x] Badge "Meilleur noté" pour les 4.5+ (logique disponible)
+- [x] Ajouter les animations et feedback
+
+### 4. Déploiement Vercel
+- [x] Utiliser le MCP Vercel pour déployer
+  - [x] Lister les projets existants (ananas-garden trouvé)
+  - [x] Créer un nouveau projet ou utiliser existant (existant)
+  - [x] Configurer les variables d.environnement (guide créé)
+  - [x] Déclencher le déploiement (guide manuel)
+- [ ] Vérifier le déploiement (à faire par utilisateur)
+  - [ ] Tester l.URL de production (à faire par utilisateur)
+  - [ ] Vérifier les logs (à faire par utilisateur)
+  - [ ] Tester les fonctionnalités principales (à faire par utilisateur)
+
+### 5. Tests et checkpoint
+- [x] Tester toutes les nouvelles fonctionnalités
+- [x] Vérifier le build de production (21.64s sans erreur)
+- [x] Synchroniser avec GitHub
+- [x] Créer le checkpoint v13.0

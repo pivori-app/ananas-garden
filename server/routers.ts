@@ -662,6 +662,48 @@ export const appRouter = router({
         return { success };
       }),
   }),
+
+  bouquetRatings: router({
+    add: protectedProcedure
+      .input(z.object({ 
+        bouquetId: z.number(),
+        rating: z.number().min(1).max(5),
+        comment: z.string().optional()
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { addBouquetRating, hasUserPurchasedBouquet } = await import("./db");
+        
+        // Vérifier si l'utilisateur a acheté ce bouquet
+        const hasPurchased = await hasUserPurchasedBouquet(ctx.user.id, input.bouquetId);
+        
+        const ratingId = await addBouquetRating({
+          userId: ctx.user.id,
+          bouquetId: input.bouquetId,
+          rating: input.rating,
+          comment: input.comment || null,
+          isVerified: hasPurchased ? 1 : 0,
+        });
+        return { success: !!ratingId, ratingId, isVerified: hasPurchased };
+      }),
+    list: publicProcedure
+      .input(z.object({ bouquetId: z.number() }))
+      .query(async ({ input }) => {
+        const { getBouquetRatings } = await import("./db");
+        return await getBouquetRatings(input.bouquetId);
+      }),
+    getAverage: publicProcedure
+      .input(z.object({ bouquetId: z.number() }))
+      .query(async ({ input }) => {
+        const { getAverageRating } = await import("./db");
+        return await getAverageRating(input.bouquetId);
+      }),
+    getUserRating: protectedProcedure
+      .input(z.object({ bouquetId: z.number() }))
+      .query(async ({ input, ctx }) => {
+        const { getUserRating } = await import("./db");
+        return await getUserRating(ctx.user.id, input.bouquetId);
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

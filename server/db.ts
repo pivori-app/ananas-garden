@@ -1,4 +1,4 @@
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, 
@@ -17,6 +17,7 @@ import {
   referrals,
   gallery,
   wishlists,
+  bouquetRatings,
   InsertBouquet,
   InsertCartItem,
   InsertOrder,
@@ -24,7 +25,8 @@ import {
   InsertFavorite,
   InsertTestimonial,
   InsertGalleryItem,
-  InsertWishlistItem
+  InsertWishlistItem,
+  InsertBouquetRating
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -961,4 +963,133 @@ export async function updateWishlistNotes(userId: number, bouquetId: number, not
     console.error("[Wishlist] Error updating notes:", error);
     return false;
   }
+}
+
+
+// ==========================================
+// Bouquet Ratings Helpers
+// ==========================================
+
+export async function addBouquetRating(rating: InsertBouquetRating): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+
+  try {
+    // Vérifier si l'utilisateur a déjà noté ce bouquet
+    const existing = await db
+      .select()
+      .from(bouquetRatings)
+      .where(and(
+        eq(bouquetRatings.userId, rating.userId),
+        eq(bouquetRatings.bouquetId, rating.bouquetId)
+      ))
+      .limit(1);
+
+    if (existing.length > 0) {
+      // Mettre à jour la note existante
+      await db
+        .update(bouquetRatings)
+        .set({
+          rating: rating.rating,
+          comment: rating.comment,
+          updatedAt: new Date()
+        })
+        .where(eq(bouquetRatings.id, existing[0].id));
+      return existing[0].id;
+    }
+
+    // Créer une nouvelle note
+    const result = await db.insert(bouquetRatings).values(rating);
+    return Number(result[0].insertId);
+  } catch (error) {
+    console.error("[BouquetRatings] Error adding rating:", error);
+    return null;
+  }
+}
+
+export async function getBouquetRatings(bouquetId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const ratings = await db
+    .select({
+      id: bouquetRatings.id,
+      rating: bouquetRatings.rating,
+      comment: bouquetRatings.comment,
+      isVerified: bouquetRatings.isVerified,
+      createdAt: bouquetRatings.createdAt,
+      user: {
+        id: users.id,
+        name: users.name,
+      },
+    })
+    .from(bouquetRatings)
+    .leftJoin(users, eq(bouquetRatings.userId, users.id))
+    .where(and(
+      eq(bouquetRatings.bouquetId, bouquetId),
+      eq(bouquetRatings.isVisible, 1)
+    ))
+    .orderBy(desc(bouquetRatings.createdAt));
+
+  return ratings;
+}
+
+export async function getAverageRating(bouquetId: number): Promise<{ average: number; count: number }> {
+  const db = await getDb();
+  if (!db) return { average: 0, count: 0 };
+
+  const result = await db
+    .select({
+      average: sql<number>`AVG(${bouquetRatings.rating})`,
+      count: sql<number>`COUNT(*)`,
+    })
+    .from(bouquetRatings)
+    .where(and(
+      eq(bouquetRatings.bouquetId, bouquetId),
+      eq(bouquetRatings.isVisible, 1)
+    ));
+
+  if (result.length === 0 || result[0].count === 0) {
+    return { average: 0, count: 0 };
+  }
+
+  return {
+    average: Math.round(result[0].average * 10) / 10, // Arrondir à 1 décimale
+    count: result[0].count,
+  };
+}
+
+export async function getUserRating(userId: number, bouquetId: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db
+    .select()
+    .from(bouquetRatings)
+    .where(and(
+      eq(bouquetRatings.userId, userId),
+      eq(bouquetRatings.bouquetId, bouquetId)
+    ))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function hasUserPurchasedBouquet(userId: number, bouquetId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  // Vérifier si l'utilisateur a commandé ce bouquet
+  const result = await db
+    .select({ id: orderItems.id })
+    .from(orderItems)
+    .leftJoin(orders, eq(orderItems.orderId, orders.id))
+    .where(and(
+      eq(orders.userId, userId),
+      eq(orderItems.bouquetId, bouquetId),
+      eq(orders.paymentStatus, "completed")
+    ))
+    .limit(1);
+
+  return result.length > 0;
 }

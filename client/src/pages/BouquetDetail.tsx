@@ -9,6 +9,7 @@ import { Loader2, ShoppingCart, ArrowLeft, Sparkles, Star } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import BouquetVisualizer from "@/components/BouquetVisualizer";
 import { WishlistButton } from "@/components/WishlistButton";
+import BouquetRatingsSection from "@/components/BouquetRatingsSection";
 import { toast } from "sonner";
 
 export default function BouquetDetail() {
@@ -234,10 +235,7 @@ export default function BouquetDetail() {
             </Card>
 
             {/* Customer Reviews Section */}
-            <Card className="p-6">
-              <h3 className="mb-6 text-2xl font-bold">Avis clients</h3>
-              <ReviewsSection bouquetId={bouquet.id} />
-            </Card>
+            <BouquetRatingsSection bouquetId={bouquet.id} />
           </div>
         </div>
       </div>
@@ -245,102 +243,3 @@ export default function BouquetDetail() {
   );
 }
 
-// Reviews Section Component
-function ReviewsSection({ bouquetId }: { bouquetId: number }) {
-  const { data: reviews, isLoading } = trpc.testimonials.list.useQuery({});
-  
-  // For now, show all reviews since we don't have bouquetId in testimonials
-  const bouquetReviews = reviews?.filter(
-    (review) => review.isVisible
-  ) || [];
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (bouquetReviews.length === 0) {
-    return (
-      <div className="text-center py-8 text-muted-foreground">
-        <p>Aucun avis pour ce bouquet pour le moment.</p>
-        <p className="text-sm mt-2">Soyez le premier à partager votre expérience !</p>
-      </div>
-    );
-  }
-
-  const averageRating = bouquetReviews.reduce((sum, r) => sum + r.rating, 0) / bouquetReviews.length;
-
-  return (
-    <div className="space-y-6">
-      {/* Average Rating */}
-      <div className="flex items-center gap-4 pb-4 border-b">
-        <div className="text-center">
-          <div className="text-4xl font-bold text-primary">{averageRating.toFixed(1)}</div>
-          <div className="flex gap-1 mt-2">
-            {Array.from({ length: 5 }, (_, i) => (
-              <Star
-                key={i}
-                className={`w-5 h-5 ${
-                  i < Math.round(averageRating)
-                    ? "fill-primary text-primary"
-                    : "text-muted-foreground/30"
-                }`}
-              />
-            ))}
-          </div>
-          <div className="text-sm text-muted-foreground mt-1">
-            {bouquetReviews.length} avis
-          </div>
-        </div>
-      </div>
-
-      {/* Reviews List */}
-      <div className="space-y-4">
-        {bouquetReviews.map((review) => (
-          <div key={review.id} className="border-b pb-4 last:border-0">
-            <div className="flex items-start justify-between mb-2">
-              <div>
-                <div className="font-semibold">{review.customerName}</div>
-                <div className="flex gap-1 mt-1">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < review.rating
-                          ? "fill-primary text-primary"
-                          : "text-muted-foreground/30"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {new Date(review.createdAt).toLocaleDateString("fr-FR", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </div>
-            </div>
-            <p className="text-muted-foreground italic">"{review.comment}"</p>
-            {review.imageUrl && (
-              <img
-                src={review.imageUrl}
-                alt="Photo du bouquet"
-                className="mt-3 rounded-lg max-w-xs w-full object-cover"
-              />
-            )}
-            {review.isVerified === 1 && (
-              <Badge variant="secondary" className="mt-2">
-                Achat vérifié
-              </Badge>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}

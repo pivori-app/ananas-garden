@@ -315,3 +315,22 @@ export const wishlists = mysqlTable("wishlists", {
 
 export type WishlistItem = typeof wishlists.$inferSelect;
 export type InsertWishlistItem = typeof wishlists.$inferInsert;
+
+/**
+ * Table des notations de bouquets
+ * Permet aux utilisateurs de noter et commenter les bouquets
+ */
+export const bouquetRatings = mysqlTable("bouquet_ratings", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").references(() => users.id).notNull(),
+  bouquetId: int("bouquetId").references(() => bouquets.id).notNull(),
+  rating: int("rating").notNull(), // Note de 1 à 5
+  comment: text("comment"), // Commentaire optionnel
+  isVerified: int("isVerified").default(0).notNull(), // 0 = non vérifié, 1 = achat vérifié
+  isVisible: int("isVisible").default(1).notNull(), // 0 = masqué, 1 = visible
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type BouquetRating = typeof bouquetRatings.$inferSelect;
+export type InsertBouquetRating = typeof bouquetRatings.$inferInsert;

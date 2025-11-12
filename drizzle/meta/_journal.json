@@ -78,6 +78,13 @@
       "when": 1762944184288,
       "tag": "0010_regular_shaman",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1762948146792,
+      "tag": "0011_nappy_monster_badoon",
+      "breakpoints": true
     }
   ]
 }
