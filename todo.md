@@ -466,3 +466,39 @@
 - [x] Vérifier le build de production (21.64s sans erreur)
 - [x] Synchroniser avec GitHub
 - [x] Créer le checkpoint v13.0
+
+## Phase 21 - Reconnaissance de Fleurs par Photo (OpenAI Vision)
+
+### 1. Configuration API OpenAI
+- [x] Ajouter la clé API OpenAI dans les secrets du projet
+- [x] Installer le package `openai` dans les dépendances
+- [x] Créer le helper `server/_core/flowerRecognition.ts`
+- [x] Fonction `identifyFlower(imageBase64)` avec OpenAI Vision
+- [x] Fonction `matchFlowerInCatalog(flowerName)` pour correspondance
+
+### 2. Backend tRPC
+- [x] Créer le router `flowerScanner`
+- [x] Procédure `identify` (upload image → analyse OpenAI)
+- [x] Procédure `search` (recherche dans le catalogue)
+- [x] Gestion des erreurs et rate limiting
+
+### 3. Page Scanner
+- [x] Créer `/client/src/pages/Scanner.tsx`
+- [x] Interface de capture photo (caméra + upload)
+- [x] Prévisualisation de l'image
+- [x] Affichage des résultats d'identification
+- [x] Bouton "Ajouter au bouquet" si fleur trouvée
+
+### 4. UI et UX
+- [x] Loader pendant l'analyse
+- [x] Affichage des informations de la fleur
+- [x] Suggestions de fleurs similaires
+- [x] Feedback visuel (succès/erreur)
+- [x] Responsive mobile (caméra native)
+
+### 5. Tests et Optimisation
+- [ ] Tester avec différentes photos de fleurs
+- [x] Vérifier la correspondance avec le catalogue
+- [ ] Optimiser la taille des images uploadées
+- [ ] Ajouter le lien Scanner dans la navigation
+- [x] Créer le checkpoint v14.0

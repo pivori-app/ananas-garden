@@ -704,6 +704,41 @@ export const appRouter = router({
         return await getUserRating(ctx.user.id, input.bouquetId);
       }),
   }),
+
+  flowerScanner: router({
+    identify: publicProcedure
+      .input(z.object({ imageBase64: z.string() }))
+      .mutation(async ({ input }) => {
+        const { identifyFlower } = await import("./_core/flowerRecognition");
+        const result = await identifyFlower(input.imageBase64);
+        return result;
+      }),
+    search: publicProcedure
+      .input(z.object({ flowerName: z.string() }))
+      .query(async ({ input }) => {
+        const { matchFlowerInCatalog } = await import("./_core/flowerRecognition");
+        const { getAllFlowers } = await import("./db");
+        
+        const catalogFlowers = await getAllFlowers();
+        const match = matchFlowerInCatalog(input.flowerName, catalogFlowers);
+        
+        return match;
+      }),
+    findSimilar: publicProcedure
+      .input(z.object({ 
+        color: z.string(),
+        emotions: z.array(z.string()).optional()
+      }))
+      .query(async ({ input }) => {
+        const { findSimilarFlowers } = await import("./_core/flowerRecognition");
+        const { getAllFlowers } = await import("./db");
+        
+        const catalogFlowers = await getAllFlowers();
+        const similar = findSimilarFlowers(input.color, input.emotions, catalogFlowers);
+        
+        return similar;
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;
