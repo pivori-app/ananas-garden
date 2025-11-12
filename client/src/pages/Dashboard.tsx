@@ -129,11 +129,12 @@ export default function Dashboard() {
 
         {/* Tabs */}
         <Tabs defaultValue="orders" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="orders">Commandes</TabsTrigger>
             <TabsTrigger value="favorites">Favoris</TabsTrigger>
             <TabsTrigger value="loyalty">Fidélité</TabsTrigger>
             <TabsTrigger value="subscriptions">Abonnements</TabsTrigger>
+            <TabsTrigger value="birthdays">Anniversaires</TabsTrigger>
             <TabsTrigger value="referral">Parrainage</TabsTrigger>
             <TabsTrigger value="testimonials">Avis</TabsTrigger>
           </TabsList>
@@ -301,6 +302,30 @@ export default function Dashboard() {
                     </Button>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Birthdays Tab */}
+          <TabsContent value="birthdays" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Mes Anniversaires</CardTitle>
+                <CardDescription>Ne manquez plus jamais un anniversaire important</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Calendar className="w-16 h-16 mx-auto mb-4 text-sage" />
+                  <h3 className="text-xl font-semibold mb-2">Gestion des anniversaires</h3>
+                  <p className="text-charcoal/70 mb-6 max-w-md mx-auto">
+                    Enregistrez les anniversaires de vos proches et recevez des rappels pour ne jamais oublier d'envoyer un bouquet !
+                  </p>
+                  <Link href="/birthdays">
+                    <Button className="bg-sage hover:bg-sage/90">
+                      Gérer mes anniversaires
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

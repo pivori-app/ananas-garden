@@ -640,4 +640,13 @@
 - [x] Analyser generateBouquetRecommendation dans emotionalAnalysis.ts
 - [x] Corriger le bug et ajouter des validations
 - [x] Tester la génération complète d'un bouquet
-- [ ] Créer le checkpoint v15.2
+- [x] Créer le checkpoint v15.2
+
+## Phase 25 - Intégration onglet Anniversaires dans le Dashboard
+- [x] Analyser Dashboard.tsx pour identifier l'emplacement des onglets
+- [x] Ajouter l'onglet "Anniversaires" entre "Abonnements" et "Parrainage"
+- [x] Créer le composant d'affichage des anniversaires dans le Dashboard
+- [x] Afficher les anniversaires à venir avec badges colorés
+- [x] Ajouter les actions rapides (modifier, supprimer, commander)
+- [x] Tester l'intégration complète
+- [ ] Créer le checkpoint v15.3
