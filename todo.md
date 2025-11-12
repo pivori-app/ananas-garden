@@ -502,3 +502,125 @@
 - [ ] Optimiser la taille des images uploadées
 - [ ] Ajouter le lien Scanner dans la navigation
 - [x] Créer le checkpoint v14.0
+
+## Phase 22 - Historique des scans et partage social
+
+### 1. Historique des scans
+- [x] Créer la table `scan_history` dans le schéma
+  - [x] Colonnes: id, userId, imageUrl, scanType (flower/bouquet), result (JSON), createdAt
+- [x] Ajouter les helpers dans `server/db.ts`
+  - [x] `saveScanToHistory(userId, scanData)`
+  - [x] `getUserScanHistory(userId, limit)`
+  - [x] `deleteScanFromHistory(scanId, userId)`
+- [x] Créer le router tRPC `scanHistory`
+  - [x] `save` - Sauvegarder un scan
+  - [x] `list` - Récupérer l.historique
+  - [x] `delete` - Supprimer un scan
+- [x] Créer la page `/history`
+  - [x] Liste des scans avec dates
+  - [x] Filtres par type (fleur/bouquet)
+  - [x] Bouton de suppression
+  - [x] Réaffichage des résultats au clic
+
+### 2. Partage social
+- [x] Créer le composant `SocialShareButtons`
+  - [x] Bouton Facebook
+  - [x] Bouton Twitter
+  - [x] Bouton WhatsApp
+  - [x] Bouton Copier le lien
+- [ ] Intégrer dans Scanner.tsx
+  - [ ] Afficher après identification réussie
+  - [ ] Générer des messages personnalisés
+- [ ] Créer des images de partage optimisées
+  - [ ] Open Graph meta tags
+  - [ ] Twitter Cards
+
+### 3. Mode hors-ligne
+- [ ] Créer le Service Worker
+  - [ ] Cache des assets statiques
+  - [ ] Cache des images de fleurs
+  - [ ] Stratégie de cache (network-first)
+- [ ] Créer une base de données locale (IndexedDB)
+  - [ ] Stocker les fleurs communes
+  - [ ] Stocker les résultats récents
+- [ ] Ajouter l'indicateur de statut
+  - [ ] Badge "Hors ligne" visible
+  - [ ] Message d'avertissement
+
+## Phase 23 - Système de vignettes d'anniversaires
+
+### 1. Base de données
+- [ ] Créer la table `birthday_contacts`
+  - [ ] Colonnes: id, userId, firstName, lastName, birthDate, address, phone, email, preferences (JSON), googleCalendarEventId, createdAt, updatedAt
+- [ ] Créer la table `birthday_orders`
+  - [ ] Colonnes: id, contactId, userId, bouquetId, orderDate, deliveryDate, status, notes, createdAt
+- [x] Ajouter les helpers dans `server/db.ts`
+  - [ ] `addBirthdayContact(userId, contactData)`
+  - [ ] `getBirthdayContacts(userId)`
+  - [ ] `updateBirthdayContact(contactId, userId, data)`
+  - [ ] `deleteBirthdayContact(contactId, userId)`
+  - [ ] `getUpcomingBirthdays(userId, days)`
+  - [ ] `getBirthdayOrderHistory(contactId)`
+
+### 2. Intégration Google Calendar
+- [ ] Configurer Google Calendar API
+  - [ ] Créer les credentials OAuth
+  - [ ] Ajouter les scopes nécessaires
+- [ ] Créer le helper `googleCalendar.ts`
+  - [ ] `syncBirthdayToCalendar(contact)`
+  - [ ] `updateCalendarEvent(eventId, contact)`
+  - [ ] `deleteCalendarEvent(eventId)`
+  - [ ] `importBirthdaysFromCalendar(userId)`
+- [ ] Créer le router tRPC `birthdays`
+  - [ ] `add` - Ajouter un contact
+  - [ ] `list` - Liste des contacts
+  - [ ] `update` - Modifier un contact
+  - [ ] `delete` - Supprimer un contact
+  - [ ] `upcoming` - Anniversaires à venir
+  - [ ] `syncWithGoogle` - Synchroniser avec Google Calendar
+  - [ ] `orderHistory` - Historique des commandes
+
+### 3. Page Anniversaires
+- [ ] Créer `/client/src/pages/Birthdays.tsx`
+  - [ ] Liste des contacts avec vignettes
+  - [ ] Formulaire d'ajout/modification
+  - [ ] Affichage des anniversaires à venir
+  - [ ] Bouton "Commander pour cet anniversaire"
+  - [ ] Historique des envois par contact
+- [ ] Créer le composant `BirthdayCard`
+  - [ ] Photo de profil (optionnelle)
+  - [ ] Nom, prénom, date
+  - [ ] Compte à rebours
+  - [ ] Boutons d'action (modifier, supprimer, commander)
+- [ ] Créer le composant `BirthdayForm`
+  - [ ] Champs de saisie
+  - [ ] Sélection de préférences (fleurs, couleurs, budget)
+  - [ ] Bouton de synchronisation Google Calendar
+
+### 4. Notifications automatiques
+- [ ] Créer le système de notifications
+  - [ ] Notification 7 jours avant
+  - [ ] Notification 3 jours avant
+  - [ ] Notification la veille
+- [ ] Créer un job CRON pour vérifier les anniversaires
+  - [ ] Exécution quotidienne
+  - [ ] Envoi des notifications via `notifyOwner`
+- [ ] Ajouter les préférences de notification
+  - [ ] Email
+  - [ ] Push notifications (optionnel)
+
+### 5. Fonctionnalités avancées
+- [ ] Suggestions de bouquets basées sur l'historique
+- [ ] Commande rapide en un clic
+- [ ] Import CSV de contacts
+- [ ] Export des anniversaires
+- [ ] Statistiques (budget annuel, fleurs les plus envoyées)
+
+### 6. Tests et finalisation
+- [ ] Tester l'ajout/modification/suppression de contacts
+- [ ] Tester la synchronisation Google Calendar
+- [ ] Tester les notifications
+- [ ] Tester la commande rapide
+- [ ] Build de production sans erreur
+- [ ] Synchroniser avec GitHub
+- [ ] Créer le checkpoint v15.0

@@ -334,3 +334,19 @@ export const bouquetRatings = mysqlTable("bouquet_ratings", {
 
 export type BouquetRating = typeof bouquetRatings.$inferSelect;
 export type InsertBouquetRating = typeof bouquetRatings.$inferInsert;
+
+/**
+ * Table de l'historique des scans
+ * Stocke les résultats des scans de fleurs et bouquets
+ */
+export const scanHistory = mysqlTable("scan_history", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").references(() => users.id).notNull(),
+  imageUrl: text("imageUrl").notNull(), // URL de l'image scannée
+  scanType: mysqlEnum("scanType", ["flower", "bouquet"]).notNull(), // Type de scan
+  result: text("result").notNull(), // Résultat JSON du scan
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ScanHistoryItem = typeof scanHistory.$inferSelect;
+export type InsertScanHistoryItem = typeof scanHistory.$inferInsert;

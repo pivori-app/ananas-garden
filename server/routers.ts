@@ -739,6 +739,32 @@ export const appRouter = router({
         return similar;
       }),
   }),
+  scanHistory: router({
+    save: protectedProcedure
+      .input(z.object({
+        imageUrl: z.string(),
+        scanType: z.enum(["flower", "bouquet"]),
+        result: z.any(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { saveScanToHistory } = await import("./db");
+        const scanId = await saveScanToHistory(ctx.user.id, input);
+        return { success: !!scanId, scanId };
+      }),
+    list: protectedProcedure
+      .input(z.object({ limit: z.number().optional().default(50) }))
+      .query(async ({ input, ctx }) => {
+        const { getUserScanHistory } = await import("./db");
+        return await getUserScanHistory(ctx.user.id, input.limit);
+      }),
+    delete: protectedProcedure
+      .input(z.object({ scanId: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        const { deleteScanFromHistory } = await import("./db");
+        const success = await deleteScanFromHistory(input.scanId, ctx.user.id);
+        return { success };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

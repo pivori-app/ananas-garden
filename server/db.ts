@@ -1093,3 +1093,69 @@ export async function hasUserPurchasedBouquet(userId: number, bouquetId: number)
 
   return result.length > 0;
 }
+
+
+// ==========================================
+// Scan History Helpers
+// ==========================================
+
+export async function saveScanToHistory(
+  userId: number,
+  scanData: {
+    imageUrl: string;
+    scanType: "flower" | "bouquet";
+    result: any;
+  }
+): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+
+  try {
+    const result = await db.insert(scanHistory).values({
+      userId,
+      imageUrl: scanData.imageUrl,
+      scanType: scanData.scanType,
+      result: JSON.stringify(scanData.result),
+    });
+    return Number(result[0].insertId);
+  } catch (error) {
+    console.error("[ScanHistory] Error saving scan:", error);
+    return null;
+  }
+}
+
+export async function getUserScanHistory(userId: number, limit: number = 50) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const history = await db
+    .select()
+    .from(scanHistory)
+    .where(eq(scanHistory.userId, userId))
+    .orderBy(desc(scanHistory.createdAt))
+    .limit(limit);
+
+  // Parser le JSON result pour chaque scan
+  return history.map((scan) => ({
+    ...scan,
+    result: JSON.parse(scan.result),
+  }));
+}
+
+export async function deleteScanFromHistory(scanId: number, userId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    await db
+      .delete(scanHistory)
+      .where(and(
+        eq(scanHistory.id, scanId),
+        eq(scanHistory.userId, userId)
+      ));
+    return true;
+  } catch (error) {
+    console.error("[ScanHistory] Error deleting scan:", error);
+    return false;
+  }
+}
