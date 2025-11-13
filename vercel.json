@@ -3,11 +3,19 @@
   "devCommand": "pnpm dev",
   "installCommand": "pnpm install",
   "outputDirectory": "dist/public",
-  "routes": [
+  "functions": {
+    "api/index.ts": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
+      "source": "/api/:path*",
+      "destination": "/api"
+    }
+  ],
+  "routes": [
     {
       "handle": "filesystem"
     },
