@@ -30,7 +30,9 @@ import {
   birthdayContacts,
   birthdayOrders,
   InsertBirthdayContact,
-  InsertBirthdayOrder
+  InsertBirthdayOrder,
+  scanHistory,
+  InsertScanHistoryItem
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
